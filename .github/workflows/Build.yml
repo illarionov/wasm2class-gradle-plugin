@@ -1,0 +1,125 @@
+name: build
+
+on:
+  pull_request:
+    paths-ignore:
+      - '**/*.md'
+  push:
+    branches:
+      - 'main'
+    paths-ignore:
+      - '**/*.md'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+env:
+  CI: true
+  GRADLE_OPTS: >-
+    -Dorg.gradle.jvmargs="-Xmx1G -XX:MaxMetaspaceSize=512M"
+    -Dorg.gradle.dependency.verification.console=verbose
+  ORG_GRADLE_PROJECT_verboseTest: true
+
+permissions:
+  checks: write
+  pull-requests: write
+
+jobs:
+  assemble:
+    name: Assemble, run tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '23'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-encryption-key: ${{ secrets.GradleEncryptionKey }}
+          dependency-graph: generate
+
+      - name: Assemble debug build, run tests
+        run: ./gradlew build --stacktrace
+
+      - name: Publish test results
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: ${{ !cancelled() && (github.actor != 'dependabot[bot]') }}
+        with:
+          comment_mode: off
+          junit_files: '**/build/test-results/**/*.xml'
+          check_name: "Test results"
+
+      - name: Bundle the test reports
+        if: failure()
+        run: >
+          find . \(
+          -name .idea -o -path '*build/intermediates' -o -path '*build/.transforms' -o -path '*build/generated'
+          \) -prune -o
+          -type d -name 'reports' -print0
+          | xargs -0 tar -c -I 'zstd -19 -T0' -f test-reports.tar.zst
+
+      - name: Upload test reports
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: test-reports
+          path: test-reports.tar.zst
+
+  static-analysis:
+    name: Style check
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+    timeout-minutes: 60
+    if: github.actor != 'dependabot[bot]'
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '23'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-encryption-key: ${{ secrets.GradleEncryptionKey }}
+          dependency-graph: generate
+
+      - name: Run static code analyzers
+        run: ./gradlew styleCheck --continue
+
+      - name: Uploads Detekt .sarif files to GitHub
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: ./build/reports/detekt/report.sarif
+          category: detekt
+
+      - name: Bundle the build report
+        if: ${{ !cancelled() }}
+        run: tar -c -I 'zstd -19 -T0' -f lint-outputs.tar.zst build/reports
+
+      - name: Upload lint outputs
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: lint-outputs
+          path: lint-outputs.tar.zst
+

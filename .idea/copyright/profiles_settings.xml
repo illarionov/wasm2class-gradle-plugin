@@ -1,0 +1,7 @@
+<component name="CopyrightManager">
+  <settings default="wasm2class-gradle-plugin">
+    <module2copyright>
+      <element module="Project Files" copyright="wasm2class-gradle-plugin" />
+    </module2copyright>
+  </settings>
+</component>

@@ -1,0 +1,45 @@
+public final class at/released/wasm2class/Wasm2ClassBasePlugin : org/gradle/api/Plugin {
+	public fun <init> ()V
+	public synthetic fun apply (Ljava/lang/Object;)V
+	public fun apply (Lorg/gradle/api/Project;)V
+}
+
+public abstract class at/released/wasm2class/Wasm2ClassExtension {
+	public fun <init> (Lorg/gradle/api/model/ObjectFactory;Lorg/gradle/api/file/ProjectLayout;Lorg/gradle/api/Project;)V
+	public final fun getModules ()Lorg/gradle/api/NamedDomainObjectContainer;
+	public final fun getOutputClasses ()Lorg/gradle/api/file/DirectoryProperty;
+	public final fun getOutputDirectory ()Lorg/gradle/api/file/DirectoryProperty;
+	public final fun getOutputResources ()Lorg/gradle/api/file/DirectoryProperty;
+	public final fun getOutputSources ()Lorg/gradle/api/file/DirectoryProperty;
+	public final fun getTargetPackage ()Lorg/gradle/api/provider/Property;
+}
+
+public abstract interface annotation class at/released/wasm2class/Wasm2ClassGeneratorDsl : java/lang/annotation/Annotation {
+}
+
+public class at/released/wasm2class/Wasm2ClassMachineModuleSpec : org/gradle/api/Named {
+	public fun <init> (Ljava/lang/String;Lorg/gradle/api/model/ObjectFactory;Lorg/gradle/api/provider/Provider;)V
+	public final fun getMachineClassSimpleName ()Lorg/gradle/api/provider/Property;
+	public final fun getModuleClassSimpleName ()Lorg/gradle/api/provider/Property;
+	public fun getName ()Ljava/lang/String;
+	public final fun getTargetPackage ()Lorg/gradle/api/provider/Property;
+	public final fun getWasm ()Lorg/gradle/api/file/RegularFileProperty;
+	public final fun getWasmMetaResourceName ()Lorg/gradle/api/provider/Property;
+}
+
+public final class at/released/wasm2class/Wasm2ClassPlugin : org/gradle/api/Plugin {
+	public fun <init> ()V
+	public synthetic fun apply (Ljava/lang/Object;)V
+	public fun apply (Lorg/gradle/api/Project;)V
+}
+
+public abstract class at/released/wasm2class/Wasm2ClassTask : org/gradle/api/DefaultTask {
+	public fun <init> (Lorg/gradle/workers/WorkerExecutor;)V
+	public final fun execute ()V
+	public abstract fun getChicoryClasspath ()Lorg/gradle/api/file/ConfigurableFileCollection;
+	public abstract fun getModules ()Lorg/gradle/api/provider/ListProperty;
+	public abstract fun getOutputClasses ()Lorg/gradle/api/file/DirectoryProperty;
+	public abstract fun getOutputResources ()Lorg/gradle/api/file/DirectoryProperty;
+	public abstract fun getOutputSources ()Lorg/gradle/api/file/DirectoryProperty;
+}
+

@@ -1,0 +1,43 @@
+#
+# SPDX-FileCopyrightText: 2025 Alexey Illarionov and the wasm2class-gradle-plugin project contributors
+# SPDX-License-Identifier: Apache-2.0
+#
+
+[versions]
+agp = "8.7.3"
+kotlin = "2.1.10"
+
+assertk = "0.28.1"
+chicory = "1.1.0"
+detekt = "1.23.7"
+gradle-plugin-publish = "1.3.0"
+gradle-maven-publish = "0.30.0"
+javaparser = "3.26.3"
+junit5 = "5.11.4"
+kotlinx-binary-compatibility-validator = "0.17.0"
+mockk = "1.13.16"
+spotless = "7.0.0"
+
+[libraries]
+assertk = { group = "com.willowtreeapps.assertk", name = "assertk", version.ref = "assertk" }
+chicory-aot = { module = "com.dylibso.chicory:aot-experimental", version.ref = "chicory" }
+chicory-runtime = { module = "com.dylibso.chicory:runtime", version.ref = "chicory" }
+chicory-wasm = { module = "com.dylibso.chicory:wasm", version.ref = "chicory" }
+javaparser = { module = "com.github.javaparser:javaparser-symbol-solver-core", version.ref = "javaparser" }
+junit-bom = { group = "org.junit", name = "junit-bom", version.ref = "junit5" }
+junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter" }
+junit-jupiter-api = { group = "org.junit.jupiter", name = "junit-jupiter-api" }
+junit-jupiter-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engine" }
+junit-jupiter-params = { group = "org.junit.jupiter", name = "junit-jupiter-params" }
+mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
+
+agp-plugin = { module = "com.android.tools.build:gradle", version.ref = "agp" }
+agp-plugin-api = { module = "com.android.tools.build:gradle-api", version.ref = "agp" }
+detekt-formatting = { group = "io.gitlab.arturbosch.detekt", name = "detekt-formatting", version.ref = "detekt" }
+detekt-plugin = { group = "io.gitlab.arturbosch.detekt", name = "detekt-gradle-plugin", version.ref = "detekt" }
+kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+spotless-plugin = { group = "com.diffplug.spotless", name = "spotless-plugin-gradle", version.ref = "spotless" }
+
+[plugins]
+gradle-plugin-publish = { id = "com.gradle.plugin-publish", version.ref = "gradle-plugin-publish" }
+kotlinx-binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "kotlinx-binary-compatibility-validator" }

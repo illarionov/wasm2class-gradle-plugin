@@ -1,0 +1,17 @@
+#
+# SPDX-FileCopyrightText: 2025 Alexey Illarionov and the wasm2class-gradle-plugin project contributors
+# SPDX-License-Identifier: Apache-2.0
+#
+
+*.iml
+.gradle
+/.android
+.kotlin/
+.konan/
+/local.properties
+.DS_Store
+build/
+/captures
+.externalNativeBuild
+.cxx
+local.properties

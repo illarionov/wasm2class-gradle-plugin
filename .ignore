@@ -1,0 +1,8 @@
+# Ignored files for tools like scc / ripgrep / ag / tokei
+
+.idea/
+.run/
+gradlew
+gradlew.bat
+**/gradle-wrapper.properties
+

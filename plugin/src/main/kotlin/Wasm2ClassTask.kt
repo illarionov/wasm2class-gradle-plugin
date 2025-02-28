@@ -79,10 +79,15 @@ public abstract class Wasm2ClassTask @Inject constructor(
 
     @TaskAction
     public fun execute() {
+        val modules = this.modules.get()
+        if (modules.isEmpty()) {
+            return
+        }
+
         val workQueue: WorkQueue = workerExecutor.classLoaderIsolation {
             classpath.from(chicoryClasspath)
         }
-        modules.get().forEach { binarySpec: Wasm2ClassMachineModuleSpec ->
+        modules.forEach { binarySpec: Wasm2ClassMachineModuleSpec ->
             workQueue.submit(GenerateChicoryMachineClasses::class.java) { setFrom(binarySpec) }
         }
     }
@@ -142,7 +147,7 @@ public abstract class Wasm2ClassTask @Inject constructor(
 
         internal companion object {
             internal fun Project.registerWasm2ClassTask(
-                name: String = "precompileWasm2class",
+                name: String = "precompileWasm2Class",
                 wasm2ClassExtension: Wasm2ClassExtension = extensions.getByType(Wasm2ClassExtension::class.java),
                 outputSources: Provider<Directory> = wasm2ClassExtension.outputSources,
             ): TaskProvider<Wasm2ClassTask> = tasks.register(name, Wasm2ClassTask::class.java) {

@@ -62,22 +62,25 @@ testing {
                 }
             }
             dependencies {
+                implementation(project(":functional-test-utils"))
                 implementation(platform(libs.junit.bom))
 
                 implementation(libs.assertk)
                 implementation(libs.junit.jupiter.api)
                 implementation(libs.junit.jupiter.params)
-                implementation(libs.mockk)
                 runtimeOnly(libs.junit.jupiter.engine)
             }
         }
+
+        register<JvmTestSuite>("functionalTest")
+
         withType(JvmTestSuite::class).matching {
             it.name in setOf("functionalTest")
         }.configureEach {
             useJUnitJupiter(libs.versions.junit5)
 
             dependencies {
-                implementation(project())
+                implementation(project(":functional-test-utils"))
                 implementation(libs.assertk)
             }
 
@@ -92,7 +95,6 @@ testing {
                 }
             }
         }
-        register<JvmTestSuite>("functionalTest")
     }
 }
 

@@ -33,4 +33,5 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "wasm2class-gradle-plugin"
+include("functional-test-utils")
 include("plugin")

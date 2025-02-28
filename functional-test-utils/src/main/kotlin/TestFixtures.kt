@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package at.released.wasm2class.test.functional.testproject.fixtures
+package at.released.wasm2class.test.functional
 
 import java.nio.file.Path
 import kotlin.io.path.readBytes

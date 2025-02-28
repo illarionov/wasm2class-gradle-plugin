@@ -3,19 +3,24 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package at.released.wasm2class.test.functional.testproject.fixtures
+package at.released.wasm2class.test.functional.testproject
 
+import at.released.wasm2class.test.functional.FileContent
 import at.released.wasm2class.test.functional.testmatrix.VersionCatalog
 
 public fun VersionCatalog.toLibsVersionsToml(): FileContent {
     val versionCatalogText = """
         [versions]
         agp = "$agpVersion"
+        chicory = "$chicoryVersion"
         kotlin = "$kotlinVersion"
         minSdk = "$minSdk"
         targetSdk = "$targetSdk"
         compileSdk = "$compileSdk"
         wasm2class-gradle-plugin = "$wasm2classPluginVersion"
+
+        [libraries]
+        chicory-wasi = { module = "com.dylibso.chicory:wasi", version.ref = "chicory" }
 
         [plugins]
         android-application = { id = "com.android.application", version.ref = "agp" }

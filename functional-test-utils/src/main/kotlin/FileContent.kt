@@ -3,20 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package at.released.wasm2class.test.functional.testproject.fixtures
-
-import at.released.wasm2class.test.functional.testproject.TestGradleProject
-import java.nio.file.Path
-import kotlin.io.path.createParentDirectories
-import kotlin.io.path.writeBytes
-
-internal fun Path.writeFiles(vararg files: FileContent) {
-    files.forEach {
-        resolve(it.dstPath).createParentDirectories().writeBytes(it.content)
-    }
-}
-
-public fun TestGradleProject.writeFiles(vararg files: FileContent): Unit = rootDir.writeFiles(files = files)
+package at.released.wasm2class.test.functional
 
 public data class FileContent(
     val dstPath: String,

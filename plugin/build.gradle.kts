@@ -72,11 +72,11 @@ testing {
             }
         }
 
-        register<JvmTestSuite>("functionalTest")
+        val functionalTestSuites = setOf("functionalTest", "functionalMatrixTest")
 
-        withType(JvmTestSuite::class).matching {
-            it.name in setOf("functionalTest")
-        }.configureEach {
+        functionalTestSuites.forEach { register<JvmTestSuite>(it) }
+
+        withType(JvmTestSuite::class).matching { it.name in functionalTestSuites }.configureEach {
             useJUnitJupiter(libs.versions.junit5)
 
             dependencies {
@@ -91,6 +91,16 @@ testing {
                         dependsOn(tasks.named("publishAllPublicationsToFunctionalTestsRepository"))
                         inputs.dir(functionalTestRepository)
                         shouldRunAfter(test)
+                        listOf(
+                            "testAgpVersion" to "TEST_AGP_VERSION",
+                            "testChicoryVersion" to "TEST_CHICORY_VERSION",
+                            "testGradleVersion" to "TEST_GRADLE_VERSION",
+                            "testKotlinVersion" to "TEST_KOTLIN_VERSION",
+                        ).forEach { (inputProperty, envVariable) ->
+                            inputs
+                                .property(inputProperty) { System.getenv(envVariable) }
+                                .optional(true)
+                        }
                     }
                 }
             }
@@ -108,6 +118,9 @@ private fun Test.configureTestTaskDefaults() {
             events = setOf(TestLogEvent.FAILED)
         }
     }
+    environment["TEST_CHICORY_VERSION"] = providers.environmentVariable("TEST_CHICORY_VERSION")
+        .orElse(libs.versions.chicory)
+        .get()
     javaLauncher = javaToolchains.launcherFor {
         languageVersion = providers.environmentVariable("TEST_JDK_VERSION")
             .map { JavaLanguageVersion.of(it.toInt()) }
@@ -147,6 +160,6 @@ publishing {
         }
     }
     publications.withType<MavenPublication>().all {
-        version = "9999"
+        version = "9999.0-SNAPSHOT"
     }
 }

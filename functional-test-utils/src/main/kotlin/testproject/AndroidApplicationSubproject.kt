@@ -5,9 +5,8 @@
 
 package at.released.wasm2class.test.functional.testproject
 
-import at.released.wasm2class.test.functional.testproject.fixtures.FileContent
-import at.released.wasm2class.test.functional.testproject.fixtures.TestFixtures
-import at.released.wasm2class.test.functional.testproject.fixtures.writeFiles
+import at.released.wasm2class.test.functional.FileContent
+import at.released.wasm2class.test.functional.TestFixtures
 import java.nio.file.Path
 import kotlin.io.path.ExperimentalPathApi
 import kotlin.io.path.copyToRecursively

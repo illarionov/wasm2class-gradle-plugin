@@ -15,11 +15,11 @@ import org.junit.jupiter.api.extension.RegisterExtension
 class Wasm2ClassPluginTest {
     @JvmField
     @RegisterExtension
-    var project = GradleTestProjectExtension()
+    var projectBuilder = GradleTestProjectExtension()
 
     @Test
     fun `test project build with plugin applied`() {
-        project.setupTestProject {
+        projectBuilder.setupTestProject {
             subproject("test") {
                 file("build.gradle.kts") {
                     append(
@@ -35,7 +35,7 @@ class Wasm2ClassPluginTest {
                 }
             }
         }
-        val result: BuildResult = project.build("assemble")
+        val result: BuildResult = projectBuilder.build("assemble")
 
         assertThat(result.output).contains("BUILD SUCCESSFUL")
     }

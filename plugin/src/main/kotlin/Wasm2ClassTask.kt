@@ -106,32 +106,32 @@ public abstract class Wasm2ClassTask @Inject constructor(
     internal abstract class GenerateChicoryMachineClasses @Inject constructor() : WorkAction<WasmAotWorkParameters> {
         override fun execute() {
             val targetPackage = parameters.targetPackage.get()
-            parameters.outputSources.asFile.get().toPath().let { outputSources ->
-                outputSources.createEmpty()
-                WasmModuleClassGenerator(
-                    targetPackage = targetPackage,
-                    moduleClassSimpleName = parameters.moduleClassSimpleName.get(),
-                    machineClassSimpleName = parameters.machineClassSimpleName.get(),
-                    wasmMetaSimpleName = parameters.wasmMetaResourceName.get(),
-                ).writeTo(outputSources)
-            }
+            val dstSourcesPath = parameters.outputSources.asFile.get().toPath()
+            val dstClassesPath = parameters.outputClasses.asFile.get().toPath()
+            val dstResourcesPath = parameters.outputResources.asFile.get().toPath()
+
+            listOf(dstSourcesPath, dstClassesPath, dstResourcesPath).forEach { it.createEmpty() }
+
+            WasmModuleClassGenerator(
+                targetPackage = targetPackage,
+                moduleClassSimpleName = parameters.moduleClassSimpleName.get(),
+                machineClassSimpleName = parameters.machineClassSimpleName.get(),
+                wasmMetaSimpleName = parameters.wasmMetaResourceName.get(),
+            ).writeTo(dstSourcesPath)
 
             val wasmBytes = parameters.wasm.asFile.get().readBytes()
             val module = Parser.parse(wasmBytes)
 
-            parameters.outputClasses.asFile.get().toPath().let { outputClasses ->
-                outputClasses.createEmpty()
-                val machineClassFqn = "$targetPackage.${parameters.machineClassSimpleName.get()}"
-                AotCompiler.compileModule(module, machineClassFqn).writeClasses(outputClasses)
-            }
+            AotCompiler
+                .compileModule(module, "$targetPackage.${parameters.machineClassSimpleName.get()}")
+                .writeClasses(dstClassesPath)
 
-            parameters.outputResources.asFile.get().toPath().let { outputResources ->
-                val rewrittenWasm = generateWasmMeta(wasmBytes, module)
-                outputResources.resolve(targetPackage.packageNameToPath()).let {
-                    val fullPath = it.createEmpty()
-                    fullPath.resolve(parameters.wasmMetaResourceName.get()).writeBytes(rewrittenWasm)
-                }
-            }
+            val rewrittenWasm = generateWasmMeta(wasmBytes, module)
+            dstResourcesPath
+                .resolve(targetPackage.packageNameToPath())
+                .createDirectories()
+                .resolve(parameters.wasmMetaResourceName.get())
+                .writeBytes(rewrittenWasm)
         }
 
         internal interface WasmAotWorkParameters : WorkParameters {

@@ -5,14 +5,12 @@
 
 package at.released.wasm2class.test.functional.testproject
 
+import at.released.wasm2class.test.functional.FileContent
+import at.released.wasm2class.test.functional.TestFixtures
+import at.released.wasm2class.test.functional.TestFixtures.Projects.SubprojectTemplateId
 import at.released.wasm2class.test.functional.testmatrix.VersionCatalog
 import at.released.wasm2class.test.functional.testproject.RootTestProject.AppliedPlugin.WASM2CLASS
 import at.released.wasm2class.test.functional.testproject.RootTestProject.Builder.RootProjectFile.Subproject
-import at.released.wasm2class.test.functional.testproject.fixtures.FileContent
-import at.released.wasm2class.test.functional.testproject.fixtures.TestFixtures
-import at.released.wasm2class.test.functional.testproject.fixtures.TestFixtures.Projects.SubprojectTemplateId
-import at.released.wasm2class.test.functional.testproject.fixtures.toLibsVersionsToml
-import at.released.wasm2class.test.functional.testproject.fixtures.writeFiles
 import at.released.wasm2class.test.functional.util.androidHome
 import java.nio.file.Path
 
@@ -65,7 +63,11 @@ public class RootTestProject private constructor(
                 rootDir = root.resolve(template.projectName),
                 name = template.projectName,
                 template = templatePath,
-            ).apply(block)
+            ).apply {
+                file(TestFixtures.CommonFiles.clockWasm)
+                file(TestFixtures.CommonFiles.helloworldWasm)
+                block()
+            }
 
             projectFiles[template.projectName] = Subproject(builder)
         }

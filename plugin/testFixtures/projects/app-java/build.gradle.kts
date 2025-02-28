@@ -4,19 +4,24 @@
  */
 
 plugins {
-    `java`
     application
     alias(libs.plugins.wasm2class)
 }
 
 wasm2class {
     targetPackage = "com.example.wasm2class.app.java"
-    create("helloworld") {
-        wasmFile = file("testwasm/helloworld.wasm")
+    modules {
+        create("helloworld") {
+            wasm = file("testwasm/helloworld.wasm")
+        }
+        create("clock") {
+            wasm = file("testwasm/clock.wasm")
+        }
     }
-    create("clock") {
-        wasmFile = file("testwasm/clock.wasm")
-    }
+}
+
+dependencies {
+    implementation(libs.chicory.wasi)
 }
 
 application {

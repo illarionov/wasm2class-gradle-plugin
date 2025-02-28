@@ -5,15 +5,19 @@
 
 package at.released.wasm2class.test.functional.testmatrix
 
-import at.released.wasm2class.test.functional.testmatrix.compatibility.AgpVersionCompatibility.AGP_8_4_2
+import at.released.wasm2class.test.functional.testmatrix.compatibility.AgpVersionCompatibility.AGP_8_0_2
+import at.released.wasm2class.test.functional.testmatrix.compatibility.AgpVersionCompatibility.AGP_8_5_2
 import at.released.wasm2class.test.functional.testmatrix.compatibility.AgpVersionCompatibility.AGP_8_8_2
 import at.released.wasm2class.test.functional.testmatrix.compatibility.AgpVersionCompatibility.agpIsCompatibleWithGradle
 import at.released.wasm2class.test.functional.testmatrix.compatibility.AgpVersionCompatibility.getCompatibleAndroidApiLevel
 import at.released.wasm2class.test.functional.testmatrix.compatibility.AgpVersionCompatibility.isAgpCompatibleWithRuntime
-import at.released.wasm2class.test.functional.testmatrix.compatibility.GradleVersionCompatibility.GRADLE_7_6_4
 import at.released.wasm2class.test.functional.testmatrix.compatibility.GradleVersionCompatibility.GRADLE_8_13
+import at.released.wasm2class.test.functional.testmatrix.compatibility.GradleVersionCompatibility.GRADLE_8_8
 import at.released.wasm2class.test.functional.testmatrix.compatibility.GradleVersionCompatibility.isGradleCompatibleWithRuntime
-import at.released.wasm2class.test.functional.testmatrix.compatibility.KotlinVersionCompatibility
+import at.released.wasm2class.test.functional.testmatrix.compatibility.KotlinVersionCompatibility.KOTLIN_2_0_21
+import at.released.wasm2class.test.functional.testmatrix.compatibility.KotlinVersionCompatibility.KOTLIN_2_1_10
+import at.released.wasm2class.test.functional.testmatrix.compatibility.KotlinVersionCompatibility.KOTLIN_2_1_20_RC
+import at.released.wasm2class.test.functional.testmatrix.compatibility.KotlinVersionCompatibility.isKotlinCompatible
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -21,19 +25,21 @@ public class TestMatrix {
     private val logger: Logger = LoggerFactory.getLogger(TestMatrix::class.java)
     private val defaultVersionCatalog: VersionCatalog = VersionCatalog.getDefault()
     private val gradleVersions = listOf(
-        GRADLE_7_6_4,
+        GRADLE_8_8,
         GRADLE_8_13,
     )
 
     // See https://developer.android.com/studio/releases/gradle-plugin
     private val agpVersions = listOf(
-        AGP_8_4_2,
+        AGP_8_0_2,
+        AGP_8_5_2,
         AGP_8_8_2,
     )
 
     private val kotlinVersions = listOf(
-        KotlinVersionCompatibility.KOTLIN_2_1_10,
-        KotlinVersionCompatibility.KOTLIN_2_1_20_RC,
+        KOTLIN_2_0_21,
+        KOTLIN_2_1_10,
+        KOTLIN_2_1_20_RC,
     )
 
     public fun getMainTestVariants(): List<VersionCatalog> = getCompatibleGradleAgpVariants()
@@ -87,8 +93,9 @@ public class TestMatrix {
                     }
                 }
             }
-        }.filter { (gradleVersion, agpVersion, _) ->
-            agpIsCompatibleWithGradle(agpVersion, gradleVersion)
+        }.filter { (gradleVersion, agpVersion, kotlinVersion) ->
+            agpIsCompatibleWithGradle(agpVersion, gradleVersion) &&
+                    isKotlinCompatible(kotlinVersion, agpVersion, gradleVersion)
         }
     }
 

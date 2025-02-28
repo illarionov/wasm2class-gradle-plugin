@@ -23,7 +23,7 @@ assertk = { group = "com.willowtreeapps.assertk", name = "assertk", version.ref 
 chicory-aot = { module = "com.dylibso.chicory:aot-experimental", version.ref = "chicory" }
 chicory-runtime = { module = "com.dylibso.chicory:runtime", version.ref = "chicory" }
 chicory-wasm = { module = "com.dylibso.chicory:wasm", version.ref = "chicory" }
-javaparser = { module = "com.github.javaparser:javaparser-symbol-solver-core", version.ref = "javaparser" }
+javaparser = { module = "com.github.javaparser:javaparser-core", version.ref = "javaparser" }
 junit-bom = { group = "org.junit", name = "junit-bom", version.ref = "junit5" }
 junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter" }
 junit-jupiter-api = { group = "org.junit.jupiter", name = "junit-jupiter-api" }
@@ -39,5 +39,6 @@ kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", v
 spotless-plugin = { group = "com.diffplug.spotless", name = "spotless-plugin-gradle", version.ref = "spotless" }
 
 [plugins]
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 gradle-plugin-publish = { id = "com.gradle.plugin-publish", version.ref = "gradle-plugin-publish" }
 kotlinx-binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "kotlinx-binary-compatibility-validator" }

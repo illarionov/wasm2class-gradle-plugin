@@ -18,6 +18,8 @@ import com.dylibso.chicory.wasm.types.SectionId.CUSTOM
 import java.io.ByteArrayOutputStream
 
 // Based on the https://github.com/dylibso/chicory/tree/main/aot-maven-plugin
+// Original license: Apache-2.0
+
 @Suppress("MagicNumber")
 internal fun generateWasmMeta(wasmBytes: ByteArray, module: WasmModule): ByteArray {
     val writer = WasmWriter()

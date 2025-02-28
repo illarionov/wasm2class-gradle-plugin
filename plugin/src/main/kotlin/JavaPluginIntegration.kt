@@ -17,7 +17,7 @@ internal fun Project.setupJavaPluginIntegration() {
     val wasm2classTask = registerWasm2ClassTask()
 
     extensions.configure<JavaPluginExtension>("java") {
-        sourceSets.named("jvmMain") {
+        sourceSets.named("main") {
             java.srcDir(wasm2classTask.flatMap(Wasm2ClassTask::outputSources))
             resources.srcDir(wasm2classTask.flatMap(Wasm2ClassTask::outputResources))
             resources.srcDir(wasm2classTask.flatMap(Wasm2ClassTask::outputClasses))
@@ -27,6 +27,6 @@ internal fun Project.setupJavaPluginIntegration() {
     val outputClasses = wasm2classTask.flatMap(Wasm2ClassTask::outputClasses)
     with(dependencies) {
         add("compileOnly", files(outputClasses))
-        add("api", Deps.CHICORY_RUNTIME)
+        add("implementation", Deps.CHICORY_RUNTIME)
     }
 }

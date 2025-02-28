@@ -15,7 +15,7 @@ internal object Wasm2ClassConstants {
         const val CHICORY_AOT = "$CHICORY_GROUP:aot-experimental:$CHICORY_VERSION"
         const val CHICORY_RUNTIME = "$CHICORY_GROUP:runtime:$CHICORY_VERSION"
         const val CHICORY_WASM = "$CHICORY_GROUP:wasm:$CHICORY_VERSION"
-        const val JAVAPARSER = "com.github.javaparser:javaparser-symbol-solver-core:$JAVAPARSER_VERSION"
+        const val JAVAPARSER = "com.github.javaparser:javaparser-core:$JAVAPARSER_VERSION"
     }
 
     object Configurations {

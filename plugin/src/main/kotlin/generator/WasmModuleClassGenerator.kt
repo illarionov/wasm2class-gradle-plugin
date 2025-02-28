@@ -38,6 +38,9 @@ import java.io.InputStream
 import java.io.UncheckedIOException
 import java.nio.file.Path
 
+// Based on the https://github.com/dylibso/chicory/tree/main/aot-maven-plugin
+// Original license: Apache-2.0
+
 internal class WasmModuleClassGenerator(
     private val targetPackage: String,
     private val moduleClassSimpleName: String,

@@ -70,20 +70,6 @@ public class RootTestProject private constructor(
             projectFiles[template.projectName] = Subproject(builder)
         }
 
-        public fun androidSubproject(
-            name: String,
-            namespace: String,
-            block: AndroidApplicationSubproject.Builder.() -> Unit = {},
-        ) {
-            val builder = AndroidApplicationSubproject.Builder(
-                rootDir = root.resolve(name),
-                name = name,
-                androidNamespace = namespace,
-            ).apply(block)
-
-            projectFiles[name] = Subproject(builder)
-        }
-
         override fun build(): RootTestProject {
             val versionsFile = versions.toLibsVersionsToml()
             val includes: List<String> = projectFiles.mapNotNull { (name, file) ->
@@ -144,13 +130,14 @@ public class RootTestProject private constructor(
             return FileContent(
                 dstPath = "gradle.properties",
                 content = """
-                org.gradle.jvmargs=-Xmx2G -XX:MaxMetaspaceSize=768M
+                org.gradle.jvmargs=-Xmx2G -XX:MaxMetaspaceSize=768M -Dfile.encoding=UTF-8
                 org.gradle.workers.max=2
                 org.gradle.vfs.watch=false
                 org.gradle.parallel=false
                 org.gradle.caching=true
                 org.gradle.configuration-cache=true
                 android.useAndroidX=true
+                android.nonTransitiveRClass=true
             """.trimIndent(),
             )
         }

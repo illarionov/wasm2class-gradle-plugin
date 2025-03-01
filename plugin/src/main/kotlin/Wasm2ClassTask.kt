@@ -149,11 +149,11 @@ public abstract class Wasm2ClassTask @Inject constructor(
             internal fun Project.registerWasm2ClassTask(
                 name: String = "precompileWasm2Class",
                 wasm2ClassExtension: Wasm2ClassExtension = extensions.getByType(Wasm2ClassExtension::class.java),
-                outputSources: Provider<Directory> = wasm2ClassExtension.outputSources,
+                outputClasses: Provider<Directory> = wasm2ClassExtension.outputClasses,
             ): TaskProvider<Wasm2ClassTask> = tasks.register(name, Wasm2ClassTask::class.java) {
                 this.modules.set(wasm2ClassExtension.modules)
-                this.outputClasses.set(wasm2ClassExtension.outputClasses)
-                this.outputSources.set(outputSources)
+                this.outputClasses.set(outputClasses)
+                this.outputSources.set(wasm2ClassExtension.outputSources)
                 this.outputResources.set(wasm2ClassExtension.outputResources)
                 this.chicoryClasspath.from(configurations.named(CHICORY_AOT_COMPILER_RUNTIME_CLASSPATH))
             }

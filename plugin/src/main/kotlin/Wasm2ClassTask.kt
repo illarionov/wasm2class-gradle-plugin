@@ -6,6 +6,7 @@
 package at.released.wasm2class
 
 import at.released.wasm2class.Wasm2ClassConstants.Configurations.CHICORY_AOT_COMPILER_RUNTIME_CLASSPATH
+import at.released.wasm2class.Wasm2ClassTask.GenerateChicoryMachineClasses.Companion.createEmpty
 import at.released.wasm2class.Wasm2ClassTask.GenerateChicoryMachineClasses.WasmAotWorkParameters
 import at.released.wasm2class.generator.WasmModuleClassGenerator
 import at.released.wasm2class.generator.generateWasmMeta
@@ -28,6 +29,7 @@ import org.gradle.api.tasks.Nested
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.TaskProvider
+import org.gradle.internal.cc.base.logger
 import org.gradle.workers.WorkAction
 import org.gradle.workers.WorkParameters
 import org.gradle.workers.WorkQueue
@@ -84,6 +86,10 @@ public abstract class Wasm2ClassTask @Inject constructor(
             return
         }
 
+        outputSources.asFile.get().toPath().createEmpty()
+        outputClasses.asFile.get().toPath().createEmpty()
+        outputResources.asFile.get().toPath().createEmpty()
+
         val workQueue: WorkQueue = workerExecutor.classLoaderIsolation {
             classpath.from(chicoryClasspath)
         }
@@ -109,8 +115,6 @@ public abstract class Wasm2ClassTask @Inject constructor(
             val dstSourcesPath = parameters.outputSources.asFile.get().toPath()
             val dstClassesPath = parameters.outputClasses.asFile.get().toPath()
             val dstResourcesPath = parameters.outputResources.asFile.get().toPath()
-
-            listOf(dstSourcesPath, dstClassesPath, dstResourcesPath).forEach { it.createEmpty() }
 
             WasmModuleClassGenerator(
                 targetPackage = targetPackage,
@@ -175,7 +179,7 @@ public abstract class Wasm2ClassTask @Inject constructor(
 
             private fun String.packageNameToPath(): String = this.replace(".", "/")
 
-            private fun Path.createEmpty(): Path {
+            internal fun Path.createEmpty(): Path {
                 val fullPath = createDirectories()
                 Files.walkFileTree(
                     fullPath,

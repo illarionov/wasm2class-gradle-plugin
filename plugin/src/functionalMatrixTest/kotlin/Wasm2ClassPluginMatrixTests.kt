@@ -65,6 +65,7 @@ class Wasm2ClassPluginMatrixTests {
             versions = versionCatalog
             plugins = setOf(WASM2CLASS, ANDROID_APPLICATION)
             templateSubproject(TestFixtures.Projects.androidJavaApp)
+            templateSubproject(TestFixtures.Projects.javaLibLib)
         }
 
         projectBuilder.build("build").let { assembleResult ->

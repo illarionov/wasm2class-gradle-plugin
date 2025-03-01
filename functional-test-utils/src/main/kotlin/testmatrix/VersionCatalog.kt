@@ -18,7 +18,7 @@ public data class VersionCatalog(
     val agpVersion: Version,
     val compileSdk: Int,
     val targetSdk: Int,
-    val minSdk: Int = 21,
+    val minSdk: Int = 28,
 ) {
     val wasm2classPluginVersion: Version = Version(9999, 0, qualifier = "SNAPSHOT")
 

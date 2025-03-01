@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package com.example.wasm2class.app.java;
+package com.example.wasm2class.java.app;
 
 import com.dylibso.chicory.runtime.Instance;
 import com.dylibso.chicory.runtime.Store;

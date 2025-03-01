@@ -29,10 +29,16 @@ public object TestFixtures {
         public val rootPath: Path
             get() = Path.of(userDir, "testFixtures/projects")
 
-        public val appJava: SubprojectTemplateId = SubprojectTemplateId("app-java")
+        public val javaApp: SubprojectTemplateId = SubprojectTemplateId("java-app")
+
+        public val javaLibApp: SubprojectTemplateId = SubprojectTemplateId("javalib-app", "java-lib/javalib-app")
+        public val javaLibLib: SubprojectTemplateId = SubprojectTemplateId("javalib-lib", "java-lib/javalib-lib")
+
+        public val androidJavaApp: SubprojectTemplateId = SubprojectTemplateId("android-java-app")
 
         public data class SubprojectTemplateId(
             val projectName: String,
+            val srcPath: String = projectName,
             val androidNamespace: String? = null,
         )
     }

@@ -10,6 +10,8 @@ import at.released.wasm2class.test.functional.TestFixtures
 import at.released.wasm2class.test.functional.junit.GradleTestProjectExtension
 import at.released.wasm2class.test.functional.testmatrix.TestMatrix
 import at.released.wasm2class.test.functional.testmatrix.VersionCatalog
+import at.released.wasm2class.test.functional.testproject.RootTestProject.AppliedPlugin.ANDROID_APPLICATION
+import at.released.wasm2class.test.functional.testproject.RootTestProject.AppliedPlugin.WASM2CLASS
 import org.junit.jupiter.api.extension.RegisterExtension
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
@@ -24,30 +26,72 @@ class Wasm2ClassPluginMatrixTests {
     fun `can build the project with the wasm2class plugin and java application module`(versionCatalog: VersionCatalog) {
         projectBuilder.setupTestProject {
             versions = versionCatalog
-            templateSubproject(TestFixtures.Projects.appJava)
+            templateSubproject(TestFixtures.Projects.javaApp)
         }
 
         projectBuilder.build("assemble").let { assembleResult ->
             assertThat(assembleResult.output).contains("BUILD SUCCESSFUL")
         }
 
-        projectBuilder.build("app-java:run").let { runResult ->
+        projectBuilder.build("run").let { runResult ->
             assertThat(runResult.output).contains("Hello, World!")
             assertThat(runResult.output).containsMatch("""Time: \d+""".toRegex())
         }
     }
 
+    @ParameterizedTest
+    @MethodSource("javaPluginTestVariants")
+    fun `can build the project with the wasm2class plugin and java library module`(versionCatalog: VersionCatalog) {
+        projectBuilder.setupTestProject {
+            versions = versionCatalog
+            templateSubproject(TestFixtures.Projects.javaLibApp)
+            templateSubproject(TestFixtures.Projects.javaLibLib)
+        }
+
+        projectBuilder.build("assemble").let { assembleResult ->
+            assertThat(assembleResult.output).contains("BUILD SUCCESSFUL")
+        }
+
+        projectBuilder.build("run").let { runResult ->
+            assertThat(runResult.output).contains("Hello, World!")
+            assertThat(runResult.output).containsMatch("""Time: \d+""".toRegex())
+        }
+    }
+
+    @ParameterizedTest
+    @MethodSource("androidJavaPluginTestVariants")
+    fun `can build the java android application with the wasm2class plugin`(versionCatalog: VersionCatalog) {
+        projectBuilder.setupTestProject {
+            versions = versionCatalog
+            plugins = setOf(WASM2CLASS, ANDROID_APPLICATION)
+            templateSubproject(TestFixtures.Projects.androidJavaApp)
+        }
+
+        projectBuilder.build("build").let { assembleResult ->
+            assertThat(assembleResult.output).contains("BUILD SUCCESSFUL")
+        }
+
+        // TODO: inspect debug APK
+    }
+
     public companion object {
         @JvmStatic
-        fun javaPluginTestVariants(): List<VersionCatalog> {
+        fun javaPluginTestVariants(): List<VersionCatalog> = mainTestVariants { it.gradleVersion }
+
+        @JvmStatic
+        fun androidJavaPluginTestVariants(): List<VersionCatalog> = mainTestVariants {
+            it.gradleVersion to it.agpVersion
+        }
+
+        fun <K> mainTestVariants(groupingBy: (VersionCatalog) -> K): List<VersionCatalog> {
             return TestMatrix().getMainTestVariants()
-                .groupingBy { it.gradleVersion }
+                .groupingBy(groupingBy)
                 .reduce { _, first, _ -> first }
                 .values
                 .toList()
         }
 
         @JvmStatic
-        fun mainTestVariants(): List<VersionCatalog> = TestMatrix().getMainTestVariants()
+        fun <K> mainTestVariants(): List<VersionCatalog> = TestMatrix().getMainTestVariants()
     }
 }

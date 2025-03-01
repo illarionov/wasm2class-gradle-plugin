@@ -57,33 +57,17 @@ public class RootTestProject private constructor(
             template: SubprojectTemplateId,
             block: BasicTestGradleSubproject.Builder.() -> Unit = {},
         ) {
-            val templatePath = TestFixtures.Projects.rootPath.resolve(template.projectName)
+            val templatePath = TestFixtures.Projects.rootPath.resolve(template.srcPath)
 
             val builder = BasicTestGradleSubproject.Builder(
                 rootDir = root.resolve(template.projectName),
                 name = template.projectName,
-                template = templatePath,
+                templateDir = templatePath,
             ).apply {
-                file(TestFixtures.CommonFiles.clockWasm)
-                file(TestFixtures.CommonFiles.helloworldWasm)
                 block()
             }
 
             projectFiles[template.projectName] = Subproject(builder)
-        }
-
-        public fun androidSubproject(
-            name: String,
-            namespace: String,
-            block: AndroidApplicationSubproject.Builder.() -> Unit = {},
-        ) {
-            val builder = AndroidApplicationSubproject.Builder(
-                rootDir = root.resolve(name),
-                name = name,
-                androidNamespace = namespace,
-            ).apply(block)
-
-            projectFiles[name] = Subproject(builder)
         }
 
         override fun build(): RootTestProject {
@@ -136,6 +120,8 @@ public class RootTestProject private constructor(
             listOf(
                 localProperties(),
                 gradleProperties(),
+                TestFixtures.CommonFiles.clockWasm,
+                TestFixtures.CommonFiles.helloworldWasm,
             ).forEach(::file)
             block()
         }.build()
@@ -144,13 +130,14 @@ public class RootTestProject private constructor(
             return FileContent(
                 dstPath = "gradle.properties",
                 content = """
-                org.gradle.jvmargs=-Xmx2G -XX:MaxMetaspaceSize=768M
+                org.gradle.jvmargs=-Xmx2G -XX:MaxMetaspaceSize=768M -Dfile.encoding=UTF-8
                 org.gradle.workers.max=2
                 org.gradle.vfs.watch=false
                 org.gradle.parallel=false
                 org.gradle.caching=true
                 org.gradle.configuration-cache=true
                 android.useAndroidX=true
+                android.nonTransitiveRClass=true
             """.trimIndent(),
             )
         }

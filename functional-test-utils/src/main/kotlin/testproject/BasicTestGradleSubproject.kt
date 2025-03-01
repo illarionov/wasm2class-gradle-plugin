@@ -19,7 +19,7 @@ public class BasicTestGradleSubproject(
     public class Builder internal constructor(
         public val rootDir: Path,
         public val name: String,
-        public var template: Path? = null,
+        public var templateDir: Path? = null,
     ) : TestGradleProject.Builder<BasicTestGradleSubproject> {
         private val projectFiles: MutableMap<String, FileContent> = mutableMapOf()
 
@@ -32,7 +32,7 @@ public class BasicTestGradleSubproject(
         }
 
         public override fun build(): BasicTestGradleSubproject {
-            template?.copyToRecursively(rootDir, overwrite = true, followLinks = false)
+            templateDir?.copyToRecursively(rootDir, overwrite = true, followLinks = false)
             rootDir.writeFiles(files = projectFiles.values.toTypedArray())
             return BasicTestGradleSubproject(rootDir, name)
         }

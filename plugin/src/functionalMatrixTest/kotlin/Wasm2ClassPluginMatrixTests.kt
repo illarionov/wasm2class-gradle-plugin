@@ -24,14 +24,33 @@ class Wasm2ClassPluginMatrixTests {
     fun `can build the project with the wasm2class plugin and java application module`(versionCatalog: VersionCatalog) {
         projectBuilder.setupTestProject {
             versions = versionCatalog
-            templateSubproject(TestFixtures.Projects.appJava)
+            templateSubproject(TestFixtures.Projects.javaApp)
         }
 
         projectBuilder.build("assemble").let { assembleResult ->
             assertThat(assembleResult.output).contains("BUILD SUCCESSFUL")
         }
 
-        projectBuilder.build("app-java:run").let { runResult ->
+        projectBuilder.build("run").let { runResult ->
+            assertThat(runResult.output).contains("Hello, World!")
+            assertThat(runResult.output).containsMatch("""Time: \d+""".toRegex())
+        }
+    }
+
+    @ParameterizedTest
+    @MethodSource("javaPluginTestVariants")
+    fun `can build the project with the wasm2class plugin and java library module`(versionCatalog: VersionCatalog) {
+        projectBuilder.setupTestProject {
+            versions = versionCatalog
+            templateSubproject(TestFixtures.Projects.javaLibApp)
+            templateSubproject(TestFixtures.Projects.javaLibLib)
+        }
+
+        projectBuilder.build("assemble").let { assembleResult ->
+            assertThat(assembleResult.output).contains("BUILD SUCCESSFUL")
+        }
+
+        projectBuilder.build("run").let { runResult ->
             assertThat(runResult.output).contains("Hello, World!")
             assertThat(runResult.output).containsMatch("""Time: \d+""".toRegex())
         }

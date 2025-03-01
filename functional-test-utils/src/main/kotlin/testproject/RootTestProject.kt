@@ -57,15 +57,13 @@ public class RootTestProject private constructor(
             template: SubprojectTemplateId,
             block: BasicTestGradleSubproject.Builder.() -> Unit = {},
         ) {
-            val templatePath = TestFixtures.Projects.rootPath.resolve(template.projectName)
+            val templatePath = TestFixtures.Projects.rootPath.resolve(template.srcPath)
 
             val builder = BasicTestGradleSubproject.Builder(
                 rootDir = root.resolve(template.projectName),
                 name = template.projectName,
-                template = templatePath,
+                templateDir = templatePath,
             ).apply {
-                file(TestFixtures.CommonFiles.clockWasm)
-                file(TestFixtures.CommonFiles.helloworldWasm)
                 block()
             }
 
@@ -136,6 +134,8 @@ public class RootTestProject private constructor(
             listOf(
                 localProperties(),
                 gradleProperties(),
+                TestFixtures.CommonFiles.clockWasm,
+                TestFixtures.CommonFiles.helloworldWasm,
             ).forEach(::file)
             block()
         }.build()

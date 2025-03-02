@@ -34,6 +34,8 @@ public object TestFixtures {
         public val javaLibApp: SubprojectTemplateId = SubprojectTemplateId("javalib-app", "java-lib/javalib-app")
         public val javaLibLib: SubprojectTemplateId = SubprojectTemplateId("javalib-lib", "java-lib/javalib-lib")
 
+        public val kotlinApp: SubprojectTemplateId = SubprojectTemplateId("kotlin-app")
+
         public val androidJavaApp: SubprojectTemplateId = SubprojectTemplateId("android-java-app")
 
         public val androidKotlinLibFlavorsApp: SubprojectTemplateId =

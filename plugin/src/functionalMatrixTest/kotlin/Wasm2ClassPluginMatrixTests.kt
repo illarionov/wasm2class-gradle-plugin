@@ -13,6 +13,7 @@ import at.released.wasm2class.test.functional.testmatrix.VersionCatalog
 import at.released.wasm2class.test.functional.testproject.RootTestProject.AppliedPlugin.ANDROID_APPLICATION
 import at.released.wasm2class.test.functional.testproject.RootTestProject.AppliedPlugin.ANDROID_LIBRARY
 import at.released.wasm2class.test.functional.testproject.RootTestProject.AppliedPlugin.KOTLIN_ANDROID
+import at.released.wasm2class.test.functional.testproject.RootTestProject.AppliedPlugin.KOTLIN_MULTIPLATFORM
 import at.released.wasm2class.test.functional.testproject.RootTestProject.AppliedPlugin.WASM2CLASS
 import org.junit.jupiter.api.extension.RegisterExtension
 import org.junit.jupiter.params.ParameterizedTest
@@ -92,6 +93,27 @@ class Wasm2ClassPluginMatrixTests {
         }
 
         // TODO: inspect debug APK
+    }
+
+    @ParameterizedTest
+    @MethodSource("allTestVariants")
+    fun `can build the multiplatform project with jvm and droid targets`(versionCatalog: VersionCatalog) {
+        projectBuilder.setupTestProject {
+            versions = versionCatalog
+            plugins = setOf(WASM2CLASS, ANDROID_APPLICATION, KOTLIN_MULTIPLATFORM)
+            templateSubproject(TestFixtures.Projects.kotlinMultiplatformApp)
+        }
+
+        projectBuilder.build("build").let { assembleResult ->
+            assertThat(assembleResult.output).contains("BUILD SUCCESSFUL")
+        }
+
+        // TODO: inspect debug APK
+
+        projectBuilder.build("jvmRun").let { runResult ->
+            assertThat(runResult.output).contains("Hello, World!")
+            assertThat(runResult.output).containsMatch("""Time: \d+""".toRegex())
+        }
     }
 
     public companion object {

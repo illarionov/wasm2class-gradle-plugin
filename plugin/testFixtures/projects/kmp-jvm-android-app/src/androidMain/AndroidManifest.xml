@@ -4,17 +4,18 @@
   ~ SPDX-License-Identifier: Apache-2.0
   -->
 
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
     <application
+        android:label="Kotlin Multiplatform App with JVM and Android targets"
         android:allowBackup="true"
         android:icon="@android:mipmap/sym_def_app_icon"
-        android:label="Wasm2Class Kotlin Android App with library and build variants"
-        tools:targetApi="31">
+        tools:targetApi="35">
         <activity
-            android:name="MainActivity"
-            android:exported="true">
+                android:name=".MainActivity"
+                android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

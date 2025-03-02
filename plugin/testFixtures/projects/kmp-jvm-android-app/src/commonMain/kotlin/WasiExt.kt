@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package com.example.wasm2class.android.kotlin.lib.lib1
+package com.example.wasm2class.kmp
 
 import com.dylibso.chicory.log.Logger
 import com.dylibso.chicory.runtime.Instance

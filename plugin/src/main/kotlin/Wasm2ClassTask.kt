@@ -6,6 +6,7 @@
 package at.released.wasm2class
 
 import at.released.wasm2class.Wasm2ClassConstants.Configurations.CHICORY_AOT_COMPILER_RUNTIME_CLASSPATH
+import at.released.wasm2class.Wasm2ClassTask.GenerateChicoryMachineClasses.Companion.createEmpty
 import at.released.wasm2class.Wasm2ClassTask.GenerateChicoryMachineClasses.WasmAotWorkParameters
 import at.released.wasm2class.generator.WasmModuleClassGenerator
 import at.released.wasm2class.generator.generateWasmMeta
@@ -15,12 +16,10 @@ import com.dylibso.chicory.wasm.Parser
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import org.gradle.api.file.ConfigurableFileCollection
-import org.gradle.api.file.Directory
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
-import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.Classpath
 import org.gradle.api.tasks.InputFiles
@@ -84,6 +83,10 @@ public abstract class Wasm2ClassTask @Inject constructor(
             return
         }
 
+        outputSources.asFile.get().toPath().createEmpty()
+        outputClasses.asFile.get().toPath().createEmpty()
+        outputResources.asFile.get().toPath().createEmpty()
+
         val workQueue: WorkQueue = workerExecutor.classLoaderIsolation {
             classpath.from(chicoryClasspath)
         }
@@ -109,8 +112,6 @@ public abstract class Wasm2ClassTask @Inject constructor(
             val dstSourcesPath = parameters.outputSources.asFile.get().toPath()
             val dstClassesPath = parameters.outputClasses.asFile.get().toPath()
             val dstResourcesPath = parameters.outputResources.asFile.get().toPath()
-
-            listOf(dstSourcesPath, dstClassesPath, dstResourcesPath).forEach { it.createEmpty() }
 
             WasmModuleClassGenerator(
                 targetPackage = targetPackage,
@@ -149,13 +150,19 @@ public abstract class Wasm2ClassTask @Inject constructor(
             internal fun Project.registerWasm2ClassTask(
                 name: String = "precompileWasm2Class",
                 wasm2ClassExtension: Wasm2ClassExtension = extensions.getByType(Wasm2ClassExtension::class.java),
-                outputClasses: Provider<Directory> = wasm2ClassExtension.outputClasses,
+            ): TaskProvider<Wasm2ClassTask> = registerWasm2ClassTaskBase(name) {
+                modules.set(wasm2ClassExtension.modules)
+                outputClasses.set(wasm2ClassExtension.outputClasses)
+                outputSources.set(wasm2ClassExtension.outputSources)
+                outputResources.set(wasm2ClassExtension.outputResources)
+            }
+
+            internal inline fun Project.registerWasm2ClassTaskBase(
+                name: String,
+                crossinline block: Wasm2ClassTask.() -> Unit = {},
             ): TaskProvider<Wasm2ClassTask> = tasks.register(name, Wasm2ClassTask::class.java) {
-                this.modules.set(wasm2ClassExtension.modules)
-                this.outputClasses.set(outputClasses)
-                this.outputSources.set(wasm2ClassExtension.outputSources)
-                this.outputResources.set(wasm2ClassExtension.outputResources)
                 this.chicoryClasspath.from(configurations.named(CHICORY_AOT_COMPILER_RUNTIME_CLASSPATH))
+                block()
             }
 
             private fun CompilerResult.writeClasses(destination: Path) {
@@ -175,7 +182,7 @@ public abstract class Wasm2ClassTask @Inject constructor(
 
             private fun String.packageNameToPath(): String = this.replace(".", "/")
 
-            private fun Path.createEmpty(): Path {
+            internal fun Path.createEmpty(): Path {
                 val fullPath = createDirectories()
                 Files.walkFileTree(
                     fullPath,

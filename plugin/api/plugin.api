@@ -43,3 +43,8 @@ public abstract class at/released/wasm2class/Wasm2ClassTask : org/gradle/api/Def
 	public abstract fun getOutputSources ()Lorg/gradle/api/file/DirectoryProperty;
 }
 
+public abstract class at/released/wasm2class/Wasm2ClassVariantExtension : com/android/build/api/variant/VariantExtension {
+	public fun <init> (Lorg/gradle/api/model/ObjectFactory;Lorg/gradle/api/provider/ProviderFactory;)V
+	public final fun getModules ()Lorg/gradle/api/NamedDomainObjectContainer;
+}
+

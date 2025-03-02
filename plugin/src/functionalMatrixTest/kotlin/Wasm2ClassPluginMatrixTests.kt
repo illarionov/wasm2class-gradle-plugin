@@ -11,6 +11,8 @@ import at.released.wasm2class.test.functional.junit.GradleTestProjectExtension
 import at.released.wasm2class.test.functional.testmatrix.TestMatrix
 import at.released.wasm2class.test.functional.testmatrix.VersionCatalog
 import at.released.wasm2class.test.functional.testproject.RootTestProject.AppliedPlugin.ANDROID_APPLICATION
+import at.released.wasm2class.test.functional.testproject.RootTestProject.AppliedPlugin.ANDROID_LIBRARY
+import at.released.wasm2class.test.functional.testproject.RootTestProject.AppliedPlugin.KOTLIN_ANDROID
 import at.released.wasm2class.test.functional.testproject.RootTestProject.AppliedPlugin.WASM2CLASS
 import org.junit.jupiter.api.extension.RegisterExtension
 import org.junit.jupiter.params.ParameterizedTest
@@ -65,6 +67,24 @@ class Wasm2ClassPluginMatrixTests {
             versions = versionCatalog
             plugins = setOf(WASM2CLASS, ANDROID_APPLICATION)
             templateSubproject(TestFixtures.Projects.androidJavaApp)
+            templateSubproject(TestFixtures.Projects.javaLibLib)
+        }
+
+        projectBuilder.build("build").let { assembleResult ->
+            assertThat(assembleResult.output).contains("BUILD SUCCESSFUL")
+        }
+
+        // TODO: inspect debug APK
+    }
+
+    @ParameterizedTest
+    @MethodSource("allTestVariants")
+    fun `can build the kotlin android library with flavors`(versionCatalog: VersionCatalog) {
+        projectBuilder.setupTestProject {
+            versions = versionCatalog
+            plugins = setOf(WASM2CLASS, ANDROID_APPLICATION, ANDROID_LIBRARY, KOTLIN_ANDROID)
+            templateSubproject(TestFixtures.Projects.androidKotlinLibFlavorsApp)
+            templateSubproject(TestFixtures.Projects.androidKotlinLibFlavorsLib1)
         }
 
         projectBuilder.build("build").let { assembleResult ->
@@ -92,6 +112,6 @@ class Wasm2ClassPluginMatrixTests {
         }
 
         @JvmStatic
-        fun <K> mainTestVariants(): List<VersionCatalog> = TestMatrix().getMainTestVariants()
+        fun <K> allTestVariants(): List<VersionCatalog> = TestMatrix().getMainTestVariants()
     }
 }

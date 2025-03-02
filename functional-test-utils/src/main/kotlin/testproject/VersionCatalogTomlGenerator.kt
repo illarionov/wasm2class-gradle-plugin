@@ -24,7 +24,7 @@ public fun VersionCatalog.toLibsVersionsToml(): FileContent {
 
         [plugins]
         android-application = { id = "com.android.application", version.ref = "agp" }
-        android-library = { id = "com.android.application", version.ref = "agp" }
+        android-library = { id = "com.android.library", version.ref = "agp" }
         kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
         kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
         kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }

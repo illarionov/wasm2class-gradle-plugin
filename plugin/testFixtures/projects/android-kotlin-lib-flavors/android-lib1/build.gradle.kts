@@ -1,4 +1,9 @@
-import at.released.wasm2class.Wasm2ClassExtension
+/*
+ * SPDX-FileCopyrightText: 2025 Alexey Illarionov and the wasm2class-gradle-plugin project contributors
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+import at.released.wasm2class.Wasm2ClassVariantExtension
 
 plugins {
     alias(libs.plugins.android.library)
@@ -21,7 +26,7 @@ android {
             isShrinkResources = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
         create("staging") {
@@ -41,7 +46,7 @@ android {
 
     androidComponents {
         onVariants(selector().withName("fullStaging")) { variant ->
-            variant.getExtension(Wasm2ClassExtension::class.java)?.apply {
+            variant.getExtension(Wasm2ClassVariantExtension::class.java)?.apply {
                 modules {
                     create("clock") {
                         wasm = file("../testwasm/clock.wasm")
@@ -73,4 +78,3 @@ wasm2class {
 dependencies {
     implementation(libs.chicory.wasi)
 }
-

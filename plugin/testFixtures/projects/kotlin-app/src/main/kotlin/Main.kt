@@ -24,6 +24,7 @@ private fun testWasm2class() {
 }
 
 private fun runHelloWorld(wasi: WasiPreview1) {
+    @Suppress("SpreadOperator")
     val store = Store().addFunction(*wasi.toHostFunctions())
     val clockInstance = store.instantiate("helloworld") { importValues ->
         Instance.builder(HelloworldModule.load())
@@ -36,6 +37,7 @@ private fun runHelloWorld(wasi: WasiPreview1) {
 }
 
 private fun runClock(wasi: WasiPreview1) {
+    @Suppress("SpreadOperator")
     val store = Store().addFunction(*wasi.toHostFunctions())
     val clockInstance = store.instantiate("clock") { importValues ->
         Instance.builder(ClockModule.load())

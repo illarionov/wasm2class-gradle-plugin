@@ -7,6 +7,8 @@
 agp = "8.7.3"
 kotlin = "2.1.10"
 
+android-tools = "31.8.2"
+android-tools-dexlib2 = "3.0.9"
 assertk = "0.28.1"
 chicory = "1.1.0"
 detekt = "1.23.8"
@@ -17,6 +19,10 @@ kotlinx-binary-compatibility-validator = "0.17.0"
 spotless = "7.0.2"
 
 [libraries]
+android-tools-common = { group = "com.android.tools", name = "common", version.ref = "android-tools" }
+android-tools-apkparser-apkanalyzer = { group = "com.android.tools.apkparser", name = "apkanalyzer", version.ref = "android-tools" }
+android-tools-apkparser-binary-resources = { group = "com.android.tools.apkparser", name = "binary-resources", version.ref = "android-tools" }
+android-tools-smali-dexlib2 = { group = "com.android.tools.smali", name = "smali-dexlib2", version.ref = "android-tools-dexlib2" }
 assertk = { group = "com.willowtreeapps.assertk", name = "assertk", version.ref = "assertk" }
 chicory-aot = { module = "com.dylibso.chicory:aot-experimental", version.ref = "chicory" }
 chicory-runtime = { module = "com.dylibso.chicory:runtime", version.ref = "chicory" }

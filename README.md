@@ -1,14 +1,27 @@
 # Wasm2class Gradle Plugin
 
-Gradle plugin based on the the [Chicory AOT Maven Plugin](https://github.com/dylibso/chicory/tree/main/aot-maven-plugin)
+An experimental Gradle plugin that allows you to compile `.wasm` files into `.class` files with AOT bytecode for [Chicory WebAssembly runtime][Chicory], making it possible to run WebAssembly modules on JVM and Android platforms.
+
+The plugin is based on the original [Chicory AOT Maven Plugin] — be sure to review its documentation for further details.
+
+The plugin provides integration with key Gradle plugins, including:
+
+* JVM Plugin
+* Android Gradle Plugin
+* Kotlin Multiplatform plugin (for JVM and Android targets).
+
+[Chicory]: https://chicory.dev/
+[Chicory AOT Maven Plugin]: https://github.com/dylibso/chicory/tree/main/aot-maven-plugin
 
 ## Requirements
 
-The latest version of this plugin requires Gradle `7.5.1` or above
+* Gradle `8.0` or newer
+* Android Gradle Plugin `8.0.2` or newer (for Android projects)
+* Kotlin `2.0.21` or newer (when using Kotlin or Kotlin Multiplatform)
 
 ## Installation
 
-Add the plugin in the Application module of your project, where Firebase is initialized:
+The plugin is published to Maven Central. To apply the plugin, add the following to your plugins block:
 
 ```
 plugins { 
@@ -17,6 +30,121 @@ plugins {
 ```
 
 ## Usage
+
+Assume you have a `helloworld.wasm` file, compiled from the following C code:
+
+```c
+#include <stdio.h>
+
+int main() {
+  printf("Hello, World!\n");
+  return 0;
+}
+```
+
+You can compile it using [Emscripten](https://emscripten.org/):
+
+```c
+emcc -O3 -mbulk-memory helloworld.c -o helloworld.wasm
+```
+
+Define the compiled WASM module in the `wasm2class` block of your Gradle project, along with the target package:
+
+```kotlin
+wasm2class {
+    targetPackage = "com.example.wasm"
+    modules {
+        create("helloworld") {
+            wasm = file("helloworld.wasm")
+        }
+    }
+}
+```
+
+This configuration generates the `com.example.wasm.HelloworldModule` class, which includes factory methods
+for initializing a Chicory WebAssembly instance.
+
+The following example demonstrates how to instantiate and execute the compiled module:
+
+```kotlin
+import com.dylibso.chicory.runtime.Instance
+import com.dylibso.chicory.runtime.Store
+import com.dylibso.chicory.wasi.WasiExitException
+import com.dylibso.chicory.wasi.WasiOptions
+import com.dylibso.chicory.wasi.WasiPreview1
+
+private fun helloworldWasm() {
+    val wasiOptions = WasiOptions.builder().withStdout(System.out).withStderr(System.err).build()
+    WasiPreview1.builder().withOptions(wasiOptions).build().use { wasi ->
+        val store = Store().addFunction(*wasi.toHostFunctions())
+        val instance = store.instantiate("helloworld") { importValues ->
+            Instance.builder(HelloworldModule.load())
+                .withMachineFactory(HelloworldModule::create)
+                .withImportValues(importValues)
+                .withStart(false)
+                .build()
+        }
+        try {
+            instance.export("_start").apply()
+        } catch (ex: WasiExitException) {
+            if (ex.exitCode() != 0) {
+                throw ex
+            }
+        }
+    }
+}
+```
+
+For more examples, including usage with different Gradle plugins, check out the [test projects](https://github.com/illarionov/wasm2class-gradle-plugin/tree/main/plugin/testFixtures/projects)
+
+### Additional Configuration
+
+The plugin supports per-module customization, including custom target package and custom naming for generated classes.
+
+For Android projects, the plugin supports variant-scoped configurations, allowing selective generation of WebAssembly
+modules for specific Build Types or Product Flavors. 
+
+Example:
+
+```kotlin
+androidComponents {
+    onVariants(selector().withName("fullPaid")) { variant ->
+        variant.getExtension(Wasm2ClassVariantExtension::class.java)?.apply {
+            modules {
+                create("paid") {
+                    wasm = file("paid.wasm")
+                    targetPackage = "com.example.full"
+                }
+            }
+        } ?: error("Wasm2ClassExtension extension not registered")
+    }
+}
+```
+
+###  R8 / ProGuard
+
+If you're using R8 or ProGuard in your project, you may need to add the following rules:
+
+```
+-dontwarn com.dylibso.chicory.experimental.hostmodule.annotations.Buffer
+-dontwarn com.dylibso.chicory.experimental.hostmodule.annotations.HostModule
+-dontwarn com.dylibso.chicory.experimental.hostmodule.annotations.WasmExport
+-dontwarn com.google.errorprone.annotations.FormatMethod
+-dontwarn java.lang.System$Logger$Level
+-dontwarn java.lang.System$Logger
+
+-keepclasseswithmembers,allowoptimization public final class **Module {
+    public static com.dylibso.chicory.wasm.WasmModule load();
+}
+```
+
+The `**Module.load()` method in generated modules uses a `XXXModule.class.getResourceAsStream()`
+ with relative path to load a stripped version of the WASM binary. Therefore, it is necessary
+to preserve the original class name and package. The final ProGuard rule ensures that these classes 
+are not renamed or moved.
+
+Alternatively, if you manually load the stripped WASM file content instead of using the `load()` method, 
+this rule is not required.
 
 ## Development notes
 
@@ -29,8 +157,6 @@ Project has 3 test suites:
   Kotlin Multiplatform and Java versions. Not executed with the `test` Gradle lifecycle task.
 
 The source code of the plugin is located in the `plugin` module.
-The `samples` directory contains a project with some sample applications. This project is also build on CI as part of
-the test workflow.
 
 Basic commands:
 

@@ -7,6 +7,8 @@ import assertk.assertThat
 import assertk.assertions.contains
 import assertk.assertions.containsMatch
 import at.released.wasm2class.test.functional.TestFixtures
+import at.released.wasm2class.test.functional.apk.assertThatApk
+import at.released.wasm2class.test.functional.apk.hasGeneratedAotFiles
 import at.released.wasm2class.test.functional.junit.GradleTestProjectExtension
 import at.released.wasm2class.test.functional.testmatrix.TestMatrix
 import at.released.wasm2class.test.functional.testmatrix.VersionCatalog
@@ -45,7 +47,7 @@ class Wasm2ClassPluginMatrixTests {
 
     @ParameterizedTest
     @MethodSource("javaPluginTestVariants")
-    fun `can build the project with java library module`(versionCatalog: VersionCatalog) {
+    fun `can build java library module`(versionCatalog: VersionCatalog) {
         projectBuilder.setupTestProject {
             versions = versionCatalog
             templateSubproject(TestFixtures.Projects.javaLibApp)
@@ -83,28 +85,36 @@ class Wasm2ClassPluginMatrixTests {
 
     @ParameterizedTest
     @MethodSource("androidJavaPluginTestVariants")
-    fun `can build the java android application`(versionCatalog: VersionCatalog) {
-        projectBuilder.setupTestProject {
+    fun `can build java android application`(versionCatalog: VersionCatalog) {
+        val androidJavaApp = TestFixtures.Projects.androidJavaApp
+        val root = projectBuilder.setupTestProject {
             versions = versionCatalog
             plugins = setOf(WASM2CLASS, ANDROID_APPLICATION)
-            templateSubproject(TestFixtures.Projects.androidJavaApp)
-            templateSubproject(TestFixtures.Projects.javaLibLib)
+            templateSubproject(androidJavaApp)
         }
 
         projectBuilder.build("build").let { assembleResult ->
             assertThat(assembleResult.output).contains("BUILD SUCCESSFUL")
         }
 
-        // TODO: inspect debug APK
+        val debugApkPath = root.subproject(androidJavaApp.projectName).rootDir.resolve(
+            "build/outputs/apk/debug/android-java-app-debug.apk",
+        )
+        assertThatApk(debugApkPath) {
+            listOf("Helloworld", "Clock").forEach {
+                hasGeneratedAotFiles("com.example.wasm2class.android.java.app", it)
+            }
+        }
     }
 
     @ParameterizedTest
     @MethodSource("allTestVariants")
     fun `can build the kotlin android library with flavors`(versionCatalog: VersionCatalog) {
-        projectBuilder.setupTestProject {
+        val androidFlavorsApp = TestFixtures.Projects.androidKotlinLibFlavorsApp
+        val root = projectBuilder.setupTestProject {
             versions = versionCatalog
             plugins = setOf(WASM2CLASS, ANDROID_APPLICATION, ANDROID_LIBRARY, KOTLIN_ANDROID)
-            templateSubproject(TestFixtures.Projects.androidKotlinLibFlavorsApp)
+            templateSubproject(androidFlavorsApp)
             templateSubproject(TestFixtures.Projects.androidKotlinLibFlavorsLib1)
         }
 
@@ -112,23 +122,37 @@ class Wasm2ClassPluginMatrixTests {
             assertThat(assembleResult.output).contains("BUILD SUCCESSFUL")
         }
 
-        // TODO: inspect debug APK
+        val debugApkPath = root.subproject(androidFlavorsApp.projectName).rootDir.resolve(
+            "build/outputs/apk/full/staging/android-app-full-staging.apk",
+        )
+        assertThatApk(debugApkPath) {
+            hasGeneratedAotFiles("com.example.wasm2class.android.kotlin.lib.lib1", "Helloworld")
+            hasGeneratedAotFiles("com.example.wasm2class.android.kotlin.lib.lib1.clock", "Clock")
+        }
     }
 
     @ParameterizedTest
     @MethodSource("allTestVariants")
     fun `can build the multiplatform project with jvm and android targets`(versionCatalog: VersionCatalog) {
-        projectBuilder.setupTestProject {
+        val app = TestFixtures.Projects.kotlinMultiplatformApp
+        val root = projectBuilder.setupTestProject {
             versions = versionCatalog
             plugins = setOf(WASM2CLASS, ANDROID_APPLICATION, KOTLIN_MULTIPLATFORM)
-            templateSubproject(TestFixtures.Projects.kotlinMultiplatformApp)
+            templateSubproject(app)
         }
 
         projectBuilder.build("build").let { assembleResult ->
             assertThat(assembleResult.output).contains("BUILD SUCCESSFUL")
         }
 
-        // TODO: inspect debug APK
+        val apkPath = root.subproject(app.projectName).rootDir.resolve(
+            "build/outputs/apk/debug/kmp-jvm-android-app-debug.apk",
+        )
+        assertThatApk(apkPath) {
+            listOf("Helloworld", "Clock").forEach {
+                hasGeneratedAotFiles("com.example.wasm2class.kmp", it)
+            }
+        }
 
         projectBuilder.build("jvmRun").let { runResult ->
             assertThat(runResult.output).contains("Hello, World!")
@@ -138,19 +162,19 @@ class Wasm2ClassPluginMatrixTests {
 
     public companion object {
         @JvmStatic
-        fun javaPluginTestVariants(): List<VersionCatalog> = mainTestVariants { it.gradleVersion }
+        fun javaPluginTestVariants(): List<VersionCatalog> = testVariantsDistinctBy { it.gradleVersion }
 
         @JvmStatic
-        fun androidJavaPluginTestVariants(): List<VersionCatalog> = mainTestVariants {
+        fun androidJavaPluginTestVariants(): List<VersionCatalog> = testVariantsDistinctBy {
             it.gradleVersion to it.agpVersion
         }
 
         @JvmStatic
-        fun kotlinPluginTestVariants(): List<VersionCatalog> = mainTestVariants {
+        fun kotlinPluginTestVariants(): List<VersionCatalog> = testVariantsDistinctBy {
             it.gradleVersion to it.kotlinVersion
         }
 
-        fun <K> mainTestVariants(groupingBy: (VersionCatalog) -> K): List<VersionCatalog> {
+        fun <K> testVariantsDistinctBy(groupingBy: (VersionCatalog) -> K): List<VersionCatalog> {
             return TestMatrix().getMainTestVariants()
                 .groupingBy(groupingBy)
                 .reduce { _, first, _ -> first }
@@ -159,6 +183,6 @@ class Wasm2ClassPluginMatrixTests {
         }
 
         @JvmStatic
-        fun <K> allTestVariants(): List<VersionCatalog> = TestMatrix().getMainTestVariants()
+        fun allTestVariants(): List<VersionCatalog> = TestMatrix().getMainTestVariants()
     }
 }

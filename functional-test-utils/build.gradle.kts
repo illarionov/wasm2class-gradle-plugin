@@ -18,6 +18,10 @@ dependencies {
     api(libs.assertk)
     api(libs.junit.jupiter.api)
     api(platform(libs.junit.bom))
+    implementation(libs.android.tools.apkparser.apkanalyzer)
+    implementation(libs.android.tools.apkparser.binary.resources)
+    implementation(libs.android.tools.common)
+    implementation(libs.android.tools.smali.dexlib2)
 
     testImplementation(libs.assertk)
     testImplementation(libs.junit.jupiter.api)

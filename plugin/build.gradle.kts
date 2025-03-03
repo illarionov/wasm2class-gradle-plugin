@@ -169,6 +169,7 @@ mavenPublishing {
         }
     }
     signAllPublications()
+    extensions.getByType(SigningExtension::class.java).isRequired = false
 
     pom {
         name.set(project.name)

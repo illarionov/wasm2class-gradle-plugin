@@ -1,17 +1,15 @@
 # Wasm2class Gradle Plugin
 
-An experimental Gradle plugin that allows you to compile `.wasm` files into `.class` files with AOT bytecode for [Chicory WebAssembly runtime][Chicory], making it possible to run WebAssembly modules on JVM and Android platforms.
+An experimental Gradle plugin that allows you to compile `.wasm` files into `.class` files with AOT bytecode for
+[Chicory WebAssembly runtime][Chicory], making it possible to run WebAssembly modules on JVM and Android platforms.
 
 The plugin is based on the original [Chicory AOT Maven Plugin] — be sure to review its documentation for further details.
 
-The plugin provides integration with key Gradle plugins, including:
-
-* JVM Plugin
-* Android Gradle Plugin
-* Kotlin Multiplatform plugin (for JVM and Android targets).
+The plugin provides integration with key Gradle plugins, including JVM Plugin, Android Gradle Plugin and 
+Kotlin Multiplatform plugin (for JVM and Android targets).
 
 [Chicory]: https://chicory.dev/
-[Chicory AOT Maven Plugin]: https://github.com/dylibso/chicory/tree/main/aot-maven-plugin
+[Chicory AOT Maven Plugin]: https://chicory.dev/docs/experimental/aot#pre-compiled-aot
 
 ## Requirements
 
@@ -21,7 +19,7 @@ The plugin provides integration with key Gradle plugins, including:
 
 ## Installation
 
-The plugin is published to Maven Central. To apply the plugin, add the following to your plugins block:
+The latest release is available on Maven Central. Add the following to your plugins block:
 
 ```
 plugins { 
@@ -102,7 +100,7 @@ For more examples, including usage with different Gradle plugins, check out the 
 The plugin supports per-module customization, including custom target package and custom naming for generated classes.
 
 For Android projects, the plugin supports variant-scoped configurations, allowing selective generation of WebAssembly
-modules for specific Build Types or Product Flavors. 
+modules for specific build types or product flavors. 
 
 Example:
 
@@ -138,10 +136,10 @@ If you're using R8 or ProGuard in your project, you may need to add the followin
 }
 ```
 
-The `**Module.load()` method in generated modules uses a `XXXModule.class.getResourceAsStream()`
- with relative path to load a stripped version of the WASM binary. Therefore, it is necessary
-to preserve the original class name and package. The final ProGuard rule ensures that these classes 
-are not renamed or moved.
+The `**Module.load()` method in generated modules relies on `XXXModule.class.getResourceAsStream()` 
+with a relative path to load a stripped version of the WASM binary. Because of this, it's important to keep 
+the original class name and package structure intact. The final ProGuard rule ensures these classes are 
+neither renamed nor relocated.
 
 Alternatively, if you manually load the stripped WASM file content instead of using the `load()` method, 
 this rule is not required.

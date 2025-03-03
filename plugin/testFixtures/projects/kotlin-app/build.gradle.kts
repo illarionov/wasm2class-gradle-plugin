@@ -41,4 +41,3 @@ wasm2class {
 dependencies {
     implementation(libs.chicory.wasi)
 }
-

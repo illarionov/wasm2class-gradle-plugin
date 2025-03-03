@@ -10,7 +10,7 @@ import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPlugin
 
 public class Wasm2ClassPlugin : Plugin<Project> {
-    override fun apply(target: Project) = with(target) {
+    override fun apply(target: Project): Unit = with(target) {
         plugins.apply(Wasm2ClassBasePlugin::class.java)
 
         plugins.withType(JavaPlugin::class.java) {

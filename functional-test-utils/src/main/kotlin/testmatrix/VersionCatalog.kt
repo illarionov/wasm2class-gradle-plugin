@@ -20,7 +20,9 @@ public data class VersionCatalog(
     val targetSdk: Int,
     val minSdk: Int = 28,
 ) {
-    val wasm2classPluginVersion: Version = Version(9999, 0, qualifier = "SNAPSHOT")
+    val wasm2classPluginVersion: Version = checkNotNull(System.getenv("TEST_WASM2CLASS_PLUGIN_VERSION")) {
+        "TEST_WASM2CLASS_PLUGIN_VERSION environment variable not set"
+    }.let(Version::parse)
 
     public companion object {
         public fun getDefault(): VersionCatalog {

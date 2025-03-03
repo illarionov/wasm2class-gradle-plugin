@@ -5,17 +5,21 @@
 
 @file:Suppress("UnstableApiUsage")
 
+import com.vanniktech.maven.publish.GradlePublishPlugin
+import com.vanniktech.maven.publish.SonatypeHost
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.dsl.ExplicitApiMode.Warning
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     `kotlin-dsl-base`
+    alias(libs.plugins.gradle.maven.publish.plugin.base)
     alias(libs.plugins.gradle.plugin.publish)
     alias(libs.plugins.kotlinx.binary.compatibility.validator)
 }
 
 group = "at.released.wasm2class"
+version = "0.1-SNAPSHOT"
 
 kotlin {
     explicitApi = Warning
@@ -118,6 +122,7 @@ private fun Test.configureTestTaskDefaults() {
             events = setOf(TestLogEvent.FAILED)
         }
     }
+    environment["TEST_WASM2CLASS_PLUGIN_VERSION"] = version
     environment["TEST_CHICORY_VERSION"] = providers.environmentVariable("TEST_CHICORY_VERSION")
         .orElse(libs.versions.chicory)
         .get()
@@ -142,7 +147,7 @@ gradlePlugin {
         implementationClass = "at.released.wasm2class.Wasm2ClassPlugin"
         displayName = "Wasm2class Gradle Plugin"
         description = "This plugin compiles WebAssembly (.wasm) files into Java class files (.class) " +
-                "for execution on the JVM using the Chicory WebAssembly runtime"
+                "with AOT bytecode for Chicory WebAssembly runtime"
         tags = listOf("android", "wasm")
     }
     plugins.create("wasm2classBase") {
@@ -152,14 +157,45 @@ gradlePlugin {
     }
 }
 
-publishing {
-    repositories {
-        maven {
-            name = "functionalTests"
-            setUrl(functionalTestRepository)
+mavenPublishing {
+    configure(GradlePublishPlugin())
+    publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
+    publishing {
+        repositories {
+            maven {
+                name = "functionalTests"
+                setUrl(functionalTestRepository)
+            }
         }
     }
-    publications.withType<MavenPublication>().all {
-        version = "9999.0-SNAPSHOT"
+    signAllPublications()
+
+    pom {
+        name.set(project.name)
+        description.set(
+            "Gradle plugin that allows you to compile .wasm files into .class files with AOT bytecode for " +
+                    "Chicory WebAssembly runtime",
+        )
+        url.set("https://github.com/illarionov/wasm2class-gradle-plugin")
+
+        licenses {
+            license {
+                name.set("The Apache License, Version 2.0")
+                url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
+                distribution.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
+            }
+        }
+        developers {
+            developer {
+                id.set("illarionov")
+                name.set("Alexey Illarionov")
+                email.set("alexey@0xdc.ru")
+            }
+        }
+        scm {
+            connection.set("scm:git:git://github.com/illarionov/wasm2class-gradle-plugin.git")
+            developerConnection.set("scm:git:ssh://github.com:illarionov/wasm2class-gradle-plugin.git")
+            url.set("https://github.com/illarionov/wasm2class-gradle-plugin/tree/main")
+        }
     }
 }

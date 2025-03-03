@@ -32,6 +32,7 @@
          <trusted-key id="6DE9B8077FBB2F8A019F4904BD17A565509DEE20" group="com.github.javaparser"/>
          <trusted-key id="6F538074CCEBF35F28AF9B066A0975F8B1127B83" group="org.jetbrains.kotlin"/>
          <trusted-key id="7B121B76A7ED6CE6E60AD51784E913A8E3A748C0" group="org.bouncycastle"/>
+         <trusted-key id="7B72C18D9C362314BF8E981B0CAEBC0883C5BB65" group="com.vanniktech"/>
          <trusted-key id="7B79ADD11F8A779FE90FD3D0893A028475557671">
             <trusting group="com.gradle"/>
             <trusting group="org.gradle"/>

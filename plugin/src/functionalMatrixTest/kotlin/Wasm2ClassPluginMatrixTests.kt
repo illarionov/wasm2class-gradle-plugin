@@ -13,6 +13,7 @@ import at.released.wasm2class.test.functional.testmatrix.VersionCatalog
 import at.released.wasm2class.test.functional.testproject.RootTestProject.AppliedPlugin.ANDROID_APPLICATION
 import at.released.wasm2class.test.functional.testproject.RootTestProject.AppliedPlugin.ANDROID_LIBRARY
 import at.released.wasm2class.test.functional.testproject.RootTestProject.AppliedPlugin.KOTLIN_ANDROID
+import at.released.wasm2class.test.functional.testproject.RootTestProject.AppliedPlugin.KOTLIN_JVM
 import at.released.wasm2class.test.functional.testproject.RootTestProject.AppliedPlugin.KOTLIN_MULTIPLATFORM
 import at.released.wasm2class.test.functional.testproject.RootTestProject.AppliedPlugin.WASM2CLASS
 import org.junit.jupiter.api.extension.RegisterExtension
@@ -26,7 +27,7 @@ class Wasm2ClassPluginMatrixTests {
 
     @ParameterizedTest
     @MethodSource("javaPluginTestVariants")
-    fun `can build the project with the wasm2class plugin and java application module`(versionCatalog: VersionCatalog) {
+    fun `can build java application`(versionCatalog: VersionCatalog) {
         projectBuilder.setupTestProject {
             versions = versionCatalog
             templateSubproject(TestFixtures.Projects.javaApp)
@@ -44,7 +45,7 @@ class Wasm2ClassPluginMatrixTests {
 
     @ParameterizedTest
     @MethodSource("javaPluginTestVariants")
-    fun `can build the project with the wasm2class plugin and java library module`(versionCatalog: VersionCatalog) {
+    fun `can build the project with java library module`(versionCatalog: VersionCatalog) {
         projectBuilder.setupTestProject {
             versions = versionCatalog
             templateSubproject(TestFixtures.Projects.javaLibApp)
@@ -62,8 +63,27 @@ class Wasm2ClassPluginMatrixTests {
     }
 
     @ParameterizedTest
+    @MethodSource("kotlinPluginTestVariants")
+    fun `can build kotlin application`(versionCatalog: VersionCatalog) {
+        projectBuilder.setupTestProject {
+            versions = versionCatalog
+            plugins = setOf(WASM2CLASS, KOTLIN_JVM)
+            templateSubproject(TestFixtures.Projects.kotlinApp)
+        }
+
+        projectBuilder.build("build").let { assembleResult ->
+            assertThat(assembleResult.output).contains("BUILD SUCCESSFUL")
+        }
+
+        projectBuilder.build("run").let { runResult ->
+            assertThat(runResult.output).contains("Hello, World!")
+            assertThat(runResult.output).containsMatch("""Time: \d+""".toRegex())
+        }
+    }
+
+    @ParameterizedTest
     @MethodSource("androidJavaPluginTestVariants")
-    fun `can build the java android application with the wasm2class plugin`(versionCatalog: VersionCatalog) {
+    fun `can build the java android application`(versionCatalog: VersionCatalog) {
         projectBuilder.setupTestProject {
             versions = versionCatalog
             plugins = setOf(WASM2CLASS, ANDROID_APPLICATION)
@@ -97,7 +117,7 @@ class Wasm2ClassPluginMatrixTests {
 
     @ParameterizedTest
     @MethodSource("allTestVariants")
-    fun `can build the multiplatform project with jvm and droid targets`(versionCatalog: VersionCatalog) {
+    fun `can build the multiplatform project with jvm and android targets`(versionCatalog: VersionCatalog) {
         projectBuilder.setupTestProject {
             versions = versionCatalog
             plugins = setOf(WASM2CLASS, ANDROID_APPLICATION, KOTLIN_MULTIPLATFORM)
@@ -123,6 +143,11 @@ class Wasm2ClassPluginMatrixTests {
         @JvmStatic
         fun androidJavaPluginTestVariants(): List<VersionCatalog> = mainTestVariants {
             it.gradleVersion to it.agpVersion
+        }
+
+        @JvmStatic
+        fun kotlinPluginTestVariants(): List<VersionCatalog> = mainTestVariants {
+            it.gradleVersion to it.kotlinVersion
         }
 
         fun <K> mainTestVariants(groupingBy: (VersionCatalog) -> K): List<VersionCatalog> {

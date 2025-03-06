@@ -87,7 +87,7 @@ public abstract class Wasm2ClassTask @Inject constructor(
         outputClasses.asFile.get().toPath().createEmpty()
         outputResources.asFile.get().toPath().createEmpty()
 
-        val workQueue: WorkQueue = workerExecutor.classLoaderIsolation {
+        val workQueue: WorkQueue = workerExecutor.processIsolation {
             classpath.from(chicoryClasspath)
         }
         modules.forEach { binarySpec: Wasm2ClassMachineModuleSpec ->

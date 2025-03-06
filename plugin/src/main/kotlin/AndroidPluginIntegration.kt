@@ -140,8 +140,6 @@ internal class ExtensionMerger(
     ).apply {
         wasm.set(high.wasm.orElse(low.wasm))
         targetPackage.set(high.targetPackage.orElse(low.targetPackage))
-        moduleClassSimpleName.set(high.moduleClassSimpleName)
-        machineClassSimpleName.set(high.machineClassSimpleName)
-        wasmMetaResourceName.set(high.wasmMetaResourceName)
+        outputClassPrefix.set(high.outputClassPrefix.orElse(low.outputClassPrefix))
     }
 }

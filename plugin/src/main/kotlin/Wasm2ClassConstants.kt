@@ -12,10 +12,8 @@ internal object Wasm2ClassConstants {
         const val CHICORY_VERSION = "1.1.0"
         const val JAVAPARSER_VERSION = "3.26.3"
         const val CHICORY_GROUP = "com.dylibso.chicory"
-        const val CHICORY_AOT = "$CHICORY_GROUP:aot-experimental:$CHICORY_VERSION"
+        const val CHICORY_AOT_BUILD = "$CHICORY_GROUP:aot-build-time-experimental:$CHICORY_VERSION"
         const val CHICORY_RUNTIME = "$CHICORY_GROUP:runtime:$CHICORY_VERSION"
-        const val CHICORY_WASM = "$CHICORY_GROUP:wasm:$CHICORY_VERSION"
-        const val JAVAPARSER = "com.github.javaparser:javaparser-core:$JAVAPARSER_VERSION"
     }
 
     object Configurations {

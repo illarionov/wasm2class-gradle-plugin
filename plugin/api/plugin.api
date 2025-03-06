@@ -18,13 +18,11 @@ public abstract interface annotation class at/released/wasm2class/Wasm2ClassGene
 }
 
 public class at/released/wasm2class/Wasm2ClassMachineModuleSpec : org/gradle/api/Named {
-	public fun <init> (Ljava/lang/String;Lorg/gradle/api/model/ObjectFactory;Lorg/gradle/api/provider/Provider;)V
-	public final fun getMachineClassSimpleName ()Lorg/gradle/api/provider/Property;
-	public final fun getModuleClassSimpleName ()Lorg/gradle/api/provider/Property;
+	public fun <init> (Ljava/lang/String;Lorg/gradle/api/model/ObjectFactory;)V
 	public fun getName ()Ljava/lang/String;
+	public final fun getOutputClassPrefix ()Lorg/gradle/api/provider/Property;
 	public final fun getTargetPackage ()Lorg/gradle/api/provider/Property;
 	public final fun getWasm ()Lorg/gradle/api/file/RegularFileProperty;
-	public final fun getWasmMetaResourceName ()Lorg/gradle/api/provider/Property;
 }
 
 public final class at/released/wasm2class/Wasm2ClassPlugin : org/gradle/api/Plugin {
@@ -44,7 +42,7 @@ public abstract class at/released/wasm2class/Wasm2ClassTask : org/gradle/api/Def
 }
 
 public abstract class at/released/wasm2class/Wasm2ClassVariantExtension : com/android/build/api/variant/VariantExtension {
-	public fun <init> (Lorg/gradle/api/model/ObjectFactory;Lorg/gradle/api/provider/ProviderFactory;)V
+	public fun <init> (Lorg/gradle/api/model/ObjectFactory;)V
 	public final fun getModules ()Lorg/gradle/api/NamedDomainObjectContainer;
 }
 

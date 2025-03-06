@@ -8,20 +8,12 @@ package at.released.wasm2class
 import com.android.build.api.variant.VariantExtension
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.model.ObjectFactory
-import org.gradle.api.provider.Provider
-import org.gradle.api.provider.ProviderFactory
 import javax.inject.Inject
 
 @Wasm2ClassGeneratorDsl
 public abstract class Wasm2ClassVariantExtension @Inject constructor(
     objects: ObjectFactory,
-    providers: ProviderFactory,
 ) : VariantExtension {
-    private val emptyStringProvider: Provider<String> = providers.provider { null }
-
-    public val modules: NamedDomainObjectContainer<Wasm2ClassMachineModuleSpec> = objects.domainObjectContainer(
-        Wasm2ClassMachineModuleSpec::class.java,
-    ) { name ->
-        objects.newInstance(Wasm2ClassMachineModuleSpec::class.java, name, emptyStringProvider)
-    }
+    public val modules: NamedDomainObjectContainer<Wasm2ClassMachineModuleSpec> =
+        objects.domainObjectContainer(Wasm2ClassMachineModuleSpec::class.java)
 }

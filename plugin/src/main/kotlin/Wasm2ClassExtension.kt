@@ -22,7 +22,11 @@ public abstract class Wasm2ClassExtension @Inject constructor(
 ) {
     public val modules: NamedDomainObjectContainer<Wasm2ClassMachineModuleSpec> = objects.domainObjectContainer(
         Wasm2ClassMachineModuleSpec::class.java,
-    ) { name -> objects.newInstance(Wasm2ClassMachineModuleSpec::class.java, name, targetPackage) }
+    ) { name ->
+        objects.newInstance(Wasm2ClassMachineModuleSpec::class.java, name).also {
+            it.targetPackage.convention(this.targetPackage)
+        }
+    }
 
     /**
      * The root package for the generated classes.

@@ -21,16 +21,9 @@ public class Wasm2ClassBasePlugin : Plugin<Project> {
             isCanBeResolved = false
             isCanBeConsumed = false
             isVisible = false
-            description = "The classpath for the Chicory AOT compiler"
+            description = "The classpath for the Chicory AOT precompiler class generator"
             defaultDependencies {
-                listOf(
-                    Deps.CHICORY_AOT,
-                    Deps.CHICORY_WASM,
-                    Deps.CHICORY_RUNTIME,
-                    Deps.JAVAPARSER,
-                ).forEach {
-                    add(target.dependencies.create(it))
-                }
+                add(target.dependencies.create(Deps.CHICORY_AOT_BUILD))
             }
         }
 

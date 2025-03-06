@@ -10,11 +10,10 @@ kotlin = "2.1.10"
 android-tools = "31.8.2"
 android-tools-dexlib2 = "3.0.9"
 assertk = "0.28.1"
-chicory = "1.1.0"
+chicory = "1.1.1"
 detekt = "1.23.8"
 gradle-plugin-publish = "1.3.1"
 gradle-maven-publish-plugin = "0.30.0"
-javaparser = "3.26.3"
 junit5 = "5.12.0"
 kotlinx-binary-compatibility-validator = "0.17.0"
 spotless = "7.0.2"
@@ -25,10 +24,9 @@ android-tools-apkparser-apkanalyzer = { group = "com.android.tools.apkparser", n
 android-tools-apkparser-binary-resources = { group = "com.android.tools.apkparser", name = "binary-resources", version.ref = "android-tools" }
 android-tools-smali-dexlib2 = { group = "com.android.tools.smali", name = "smali-dexlib2", version.ref = "android-tools-dexlib2" }
 assertk = { group = "com.willowtreeapps.assertk", name = "assertk", version.ref = "assertk" }
-chicory-aot = { module = "com.dylibso.chicory:aot-experimental", version.ref = "chicory" }
 chicory-runtime = { module = "com.dylibso.chicory:runtime", version.ref = "chicory" }
+chicory-aot-build = { module = "com.dylibso.chicory:aot-build-time-experimental", version.ref = "chicory" }
 chicory-wasm = { module = "com.dylibso.chicory:wasm", version.ref = "chicory" }
-javaparser = { module = "com.github.javaparser:javaparser-core", version.ref = "javaparser" }
 junit-bom = { group = "org.junit", name = "junit-bom", version.ref = "junit5" }
 junit-jupiter-api = { group = "org.junit.jupiter", name = "junit-jupiter-api" }
 junit-jupiter-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engine" }

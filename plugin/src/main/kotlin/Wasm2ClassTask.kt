@@ -8,11 +8,8 @@ package at.released.wasm2class
 import at.released.wasm2class.Wasm2ClassConstants.Configurations.CHICORY_AOT_COMPILER_RUNTIME_CLASSPATH
 import at.released.wasm2class.Wasm2ClassTask.GenerateChicoryMachineClasses.Companion.createEmpty
 import at.released.wasm2class.Wasm2ClassTask.GenerateChicoryMachineClasses.WasmAotWorkParameters
-import at.released.wasm2class.generator.WasmModuleClassGenerator
-import at.released.wasm2class.generator.generateWasmMeta
-import com.dylibso.chicory.experimental.aot.AotCompiler
-import com.dylibso.chicory.experimental.aot.CompilerResult
-import com.dylibso.chicory.wasm.Parser
+import com.dylibso.chicory.experimental.build.time.aot.Config
+import com.dylibso.chicory.experimental.build.time.aot.Generator
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import org.gradle.api.file.ConfigurableFileCollection
@@ -39,7 +36,6 @@ import java.nio.file.SimpleFileVisitor
 import java.nio.file.attribute.BasicFileAttributes
 import javax.inject.Inject
 import kotlin.io.path.createDirectories
-import kotlin.io.path.writeBytes
 
 @CacheableTask
 public abstract class Wasm2ClassTask @Inject constructor(
@@ -100,39 +96,23 @@ public abstract class Wasm2ClassTask @Inject constructor(
         outputClasses.set(this@Wasm2ClassTask.outputClasses)
         outputSources.set(this@Wasm2ClassTask.outputSources)
         outputResources.set(this@Wasm2ClassTask.outputResources)
-        targetPackage.set(spec.targetPackage)
-        moduleClassSimpleName.set(spec.moduleClassSimpleName)
-        machineClassSimpleName.set(spec.machineClassSimpleName)
-        wasmMetaResourceName.set(spec.wasmMetaResourceName)
+        outputClassPrefix.set(spec.outputClassPrefix)
     }
 
     internal abstract class GenerateChicoryMachineClasses @Inject constructor() : WorkAction<WasmAotWorkParameters> {
         override fun execute() {
-            val targetPackage = parameters.targetPackage.get()
-            val dstSourcesPath = parameters.outputSources.asFile.get().toPath()
-            val dstClassesPath = parameters.outputClasses.asFile.get().toPath()
-            val dstResourcesPath = parameters.outputResources.asFile.get().toPath()
-
-            WasmModuleClassGenerator(
-                targetPackage = targetPackage,
-                moduleClassSimpleName = parameters.moduleClassSimpleName.get(),
-                machineClassSimpleName = parameters.machineClassSimpleName.get(),
-                wasmMetaSimpleName = parameters.wasmMetaResourceName.get(),
-            ).writeTo(dstSourcesPath)
-
-            val wasmBytes = parameters.wasm.asFile.get().readBytes()
-            val module = Parser.parse(wasmBytes)
-
-            AotCompiler
-                .compileModule(module, "$targetPackage.${parameters.machineClassSimpleName.get()}")
-                .writeClasses(dstClassesPath)
-
-            val rewrittenWasm = generateWasmMeta(wasmBytes, module)
-            dstResourcesPath
-                .resolve(targetPackage.packageNameToPath())
-                .createDirectories()
-                .resolve(parameters.wasmMetaResourceName.get())
-                .writeBytes(rewrittenWasm)
+            val config = Config.builder().apply {
+                withWasmFile(parameters.wasm.asFile.get().toPath())
+                withName(parameters.outputClassPrefix.get())
+                withTargetClassFolder(parameters.outputClasses.asFile.get().toPath())
+                withTargetSourceFolder(parameters.outputSources.asFile.get().toPath())
+                withTargetWasmFolder(parameters.outputResources.asFile.get().toPath())
+            }.build()
+            Generator(config).run {
+                generateSources()
+                generateResources()
+                generateMetaWasm()
+            }
         }
 
         internal interface WasmAotWorkParameters : WorkParameters {
@@ -140,10 +120,7 @@ public abstract class Wasm2ClassTask @Inject constructor(
             val outputClasses: DirectoryProperty
             val outputSources: DirectoryProperty
             val outputResources: DirectoryProperty
-            val targetPackage: Property<String>
-            val moduleClassSimpleName: Property<String>
-            val machineClassSimpleName: Property<String>
-            val wasmMetaResourceName: Property<String>
+            val outputClassPrefix: Property<String>
         }
 
         internal companion object {
@@ -164,23 +141,6 @@ public abstract class Wasm2ClassTask @Inject constructor(
                 this.chicoryClasspath.from(configurations.named(CHICORY_AOT_COMPILER_RUNTIME_CLASSPATH))
                 block()
             }
-
-            private fun CompilerResult.writeClasses(destination: Path) {
-                classBytes()
-                    .mapKeys { it.key.packageNameToPath() + ".class" }
-                    .forEach { (binaryPath, payload) ->
-                        try {
-                            destination.resolve(binaryPath).run {
-                                parent.createDirectories()
-                                writeBytes(payload)
-                            }
-                        } catch (ioe: IOException) {
-                            throw IOException("Failed to write class file `$binaryPath`", ioe)
-                        }
-                    }
-            }
-
-            private fun String.packageNameToPath(): String = this.replace(".", "/")
 
             internal fun Path.createEmpty(): Path {
                 val fullPath = createDirectories()

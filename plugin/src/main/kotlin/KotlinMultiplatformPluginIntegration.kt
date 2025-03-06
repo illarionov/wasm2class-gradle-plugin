@@ -56,7 +56,7 @@ internal fun Project.setupKotlinMultiplatformPluginIntegration() {
                         aotModuleClasses,
                     )
                     dependencies {
-                        api(Deps.CHICORY_RUNTIME)
+                        implementation(Deps.CHICORY_RUNTIME)
                         compileOnly(files(aotModuleClasses, outputClasses))
                     }
                 }

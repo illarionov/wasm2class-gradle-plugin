@@ -13,7 +13,7 @@ import kotlin.IllegalArgumentException
  */
 public class Version(
     private val major: Int,
-    private val minor: Int,
+    private val minor: Int?,
     private val patch: Int? = null,
     private val qualifier: String? = null,
 ) : Comparable<Version> {
@@ -21,7 +21,7 @@ public class Version(
 
     override fun compareTo(other: Version): Int = when {
         major != other.major -> major - other.major
-        minor != other.minor -> minor - other.minor
+        minor != other.minor -> (minor ?: 0) - (other.minor ?: 0)
         patch != other.patch -> (patch ?: 0) - (other.patch ?: 0)
         else -> -(qualifier ?: "").compareTo(other.qualifier ?: "")
     }
@@ -32,32 +32,51 @@ public class Version(
     override fun toString(): String = when {
         qualifier != null -> if (patch != null) {
             "$major.$minor.$patch-$qualifier"
-        } else {
+        } else if (minor != null) {
             "$major.$minor-$qualifier"
+        } else {
+            "$major-$qualifier"
         }
 
-        patch != null -> "$major.$minor.$patch"
-        else -> "$major.$minor"
+        patch != null -> if (minor != null) {
+            "$major.$minor.$patch"
+        } else {
+            "$major.$patch"
+        }
+
+        minor != null -> "$major.$minor"
+        else -> major.toString()
     }
 
     public companion object {
         @Suppress("MagicNumber")
         public fun parse(version: String): Version = try {
             val versionSplits = version.split('.')
-            check(versionSplits.size == 2 || versionSplits.size == 3)
+            check(versionSplits.size in 1..3)
 
             val lastPartSplits = versionSplits.last().split('-', limit = 2)
             check(lastPartSplits.size in 1..2)
 
-            val major = versionSplits[0].toInt()
-            val minor: Int
-            val patch: Int?
-            if (versionSplits.size == 2) {
-                minor = lastPartSplits[0].toInt()
-                patch = null
+            val major: Int = if (versionSplits.size > 1) {
+                versionSplits[0].toInt()
             } else {
-                minor = versionSplits[1].toInt()
-                patch = lastPartSplits[0].toInt()
+                lastPartSplits[0].toInt()
+            }
+            val minor: Int?
+            val patch: Int?
+            when (versionSplits.size) {
+                1 -> {
+                    minor = null
+                    patch = null
+                }
+                2 -> {
+                    minor = lastPartSplits[0].toInt()
+                    patch = null
+                }
+                else -> {
+                    minor = versionSplits[1].toInt()
+                    patch = lastPartSplits[0].toInt()
+                }
             }
             Version(
                 major = major,

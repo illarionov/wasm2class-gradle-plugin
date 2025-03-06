@@ -92,7 +92,7 @@ internal fun Project.setupAndroidPluginIntegration() {
         variant.compileConfiguration.extendsFrom(aotMachineJarConfiguration)
     }
 
-    project.dependencies.add("api", Deps.CHICORY_RUNTIME)
+    project.dependencies.add("implementation", Deps.CHICORY_RUNTIME)
 }
 
 internal class ExtensionMerger(

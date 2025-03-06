@@ -45,10 +45,9 @@ tasks.withType<JavaCompile>().configureEach {
 }
 
 dependencies {
-    compileOnly(libs.chicory.aot)
+    compileOnly(libs.chicory.aot.build)
     compileOnly(libs.chicory.runtime)
     compileOnly(libs.chicory.wasm)
-    compileOnly(libs.javaparser)
     compileOnly(libs.agp.plugin.api)
     compileOnly(libs.kotlin.gradle.plugin)
 }

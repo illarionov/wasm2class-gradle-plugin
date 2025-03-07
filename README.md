@@ -23,7 +23,7 @@ The latest release is available on Maven Central. Add the following to your plug
 
 ```
 plugins { 
-    id("at.released.wasm2class.plugin") version "0.1"
+    id("at.released.wasm2class.plugin") version "0.2"
 }
 ```
 

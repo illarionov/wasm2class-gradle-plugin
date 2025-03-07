@@ -19,7 +19,7 @@ plugins {
 }
 
 group = "at.released.wasm2class"
-version = "0.2"
+version = "0.3-SNAPSHOT"
 
 kotlin {
     explicitApi = Warning

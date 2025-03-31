@@ -11,6 +11,7 @@ import at.released.wasm2class.test.functional.testmatrix.Version
 import at.released.wasm2class.test.functional.testmatrix.compatibility.GradleVersionCompatibility.GRADLE_7_4
 import at.released.wasm2class.test.functional.testmatrix.compatibility.GradleVersionCompatibility.GRADLE_8_0
 import at.released.wasm2class.test.functional.testmatrix.compatibility.GradleVersionCompatibility.GRADLE_8_10_2
+import at.released.wasm2class.test.functional.testmatrix.compatibility.GradleVersionCompatibility.GRADLE_8_11_1
 import at.released.wasm2class.test.functional.testmatrix.compatibility.GradleVersionCompatibility.GRADLE_8_2
 import at.released.wasm2class.test.functional.testmatrix.compatibility.GradleVersionCompatibility.GRADLE_8_4
 import at.released.wasm2class.test.functional.testmatrix.compatibility.GradleVersionCompatibility.GRADLE_8_6
@@ -35,6 +36,8 @@ internal object AgpVersionCompatibility {
     val AGP_8_7_0 = Version(8, 7, 0)
     val AGP_8_8_0 = Version(8, 8, 0)
     val AGP_8_8_2 = Version(8, 8, 2)
+    val AGP_8_9_0 = Version(8, 9, 0)
+    val AGP_8_9_1 = Version(8, 9, 1)
 
     // Checks if a AGP version [agpVersion] can run on the current JVM
     fun isAgpCompatibleWithRuntime(agpVersion: Version): Boolean {
@@ -53,6 +56,7 @@ internal object AgpVersionCompatibility {
         agpVersion: Version,
         gradleVersion: Version,
     ) = when {
+        agpVersion >= AGP_8_9_0 -> gradleVersion >= GRADLE_8_11_1
         agpVersion >= AGP_8_8_0 -> gradleVersion >= GRADLE_8_10_2
         agpVersion >= AGP_8_7_0 -> gradleVersion >= GRADLE_8_9
         agpVersion >= AGP_8_5_0 -> gradleVersion >= GRADLE_8_7

@@ -87,10 +87,16 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # AGP 8.8.2 Kotlin 2.1.20-RC
+          # AGP 8.9.1
+          - gradle: 8.13
+            agp: 8.9.1
+            kotlin: 2.1.20
+            jdk: 23
+
+          # AGP 8.8.2 Kotlin 2.1.20
           - gradle: 8.13
             agp: 8.8.2
-            kotlin: 2.1.20-RC
+            kotlin: 2.1.20
             jdk: 23
 
           # AGP 8.8.2

@@ -24,7 +24,7 @@ internal object KotlinVersionCompatibility {
     val KOTLIN_2_0_21 = Version(2, 0, 21)
     val KOTLIN_2_1_0 = Version(2, 1, 0)
     val KOTLIN_2_1_10 = Version(2, 1, 10)
-    val KOTLIN_2_1_20_RC = Version(2, 1, 20, "RC")
+    val KOTLIN_2_1_20 = Version(2, 1, 20)
 
     // https://kotlinlang.org/docs/gradle-configure-project.html#apply-the-plugin
     fun isKotlinCompatible(

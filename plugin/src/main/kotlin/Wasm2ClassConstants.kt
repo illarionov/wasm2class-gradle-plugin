@@ -9,7 +9,7 @@ internal object Wasm2ClassConstants {
     internal const val WASM2CLASS_EXTENSION_NAME = "wasm2class"
 
     object Deps {
-        const val CHICORY_VERSION = "1.2.0"
+        const val CHICORY_VERSION = "1.2.1"
         const val CHICORY_GROUP = "com.dylibso.chicory"
         const val CHICORY_AOT_BUILD = "$CHICORY_GROUP:aot-build-time-experimental:$CHICORY_VERSION"
         const val CHICORY_RUNTIME = "$CHICORY_GROUP:runtime:$CHICORY_VERSION"

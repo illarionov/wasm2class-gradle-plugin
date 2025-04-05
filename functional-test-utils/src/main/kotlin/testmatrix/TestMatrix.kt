@@ -8,6 +8,7 @@ package at.released.wasm2class.test.functional.testmatrix
 import at.released.wasm2class.test.functional.testmatrix.compatibility.AgpVersionCompatibility.AGP_8_0_2
 import at.released.wasm2class.test.functional.testmatrix.compatibility.AgpVersionCompatibility.AGP_8_5_2
 import at.released.wasm2class.test.functional.testmatrix.compatibility.AgpVersionCompatibility.AGP_8_8_2
+import at.released.wasm2class.test.functional.testmatrix.compatibility.AgpVersionCompatibility.AGP_8_9_1
 import at.released.wasm2class.test.functional.testmatrix.compatibility.AgpVersionCompatibility.agpIsCompatibleWithGradle
 import at.released.wasm2class.test.functional.testmatrix.compatibility.AgpVersionCompatibility.getCompatibleAndroidApiLevel
 import at.released.wasm2class.test.functional.testmatrix.compatibility.AgpVersionCompatibility.isAgpCompatibleWithRuntime
@@ -16,7 +17,7 @@ import at.released.wasm2class.test.functional.testmatrix.compatibility.GradleVer
 import at.released.wasm2class.test.functional.testmatrix.compatibility.GradleVersionCompatibility.isGradleCompatibleWithRuntime
 import at.released.wasm2class.test.functional.testmatrix.compatibility.KotlinVersionCompatibility.KOTLIN_2_0_21
 import at.released.wasm2class.test.functional.testmatrix.compatibility.KotlinVersionCompatibility.KOTLIN_2_1_10
-import at.released.wasm2class.test.functional.testmatrix.compatibility.KotlinVersionCompatibility.KOTLIN_2_1_20_RC
+import at.released.wasm2class.test.functional.testmatrix.compatibility.KotlinVersionCompatibility.KOTLIN_2_1_20
 import at.released.wasm2class.test.functional.testmatrix.compatibility.KotlinVersionCompatibility.isKotlinCompatible
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -34,12 +35,13 @@ public class TestMatrix {
         AGP_8_0_2,
         AGP_8_5_2,
         AGP_8_8_2,
+        AGP_8_9_1,
     )
 
     private val kotlinVersions = listOf(
         KOTLIN_2_0_21,
         KOTLIN_2_1_10,
-        KOTLIN_2_1_20_RC,
+        KOTLIN_2_1_20,
     )
 
     public fun getMainTestVariants(): List<VersionCatalog> = getCompatibleGradleAgpVariants()

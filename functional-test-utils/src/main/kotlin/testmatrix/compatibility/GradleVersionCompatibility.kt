@@ -23,6 +23,7 @@ internal object GradleVersionCompatibility {
     val GRADLE_8_8 = Version(8, 8)
     val GRADLE_8_9 = Version(8, 9)
     val GRADLE_8_10_2 = Version(8, 10, 2)
+    val GRADLE_8_11_1 = Version(8, 11, 1)
     val GRADLE_8_13 = Version(8, 13)
 
     // Checks if a Gradle version can run on the current JVM

@@ -1,5 +1,16 @@
 # Change Log
 
+## [0.3] — 2025-04-06
+
+#### 🤖 Dependencies
+
+- Bump Chicory version to 1.2.1
+
+#### 🔧 Maintenance
+
+- Bump gradle-maven-publish-plugin to 0.31.0
+- Test with AGP 8.9.1 and Kotlin 2.1.20
+
 ## [0.2] — 2025-03-07
 
 #### 💅 Polish

@@ -1,7 +1,7 @@
 # Releasing
 
 1. Create a local release branch from main: `git checkout -b vX.Y.Z`
-2. Change the version in `plugin/build.gradle` to a non-SNAPSHOT version.
+2. Change the version in `plugin/build.gradle.kts` to a non-SNAPSHOT version.
 3. Update the `CHANGELOG.md` for the impending release.
 4. Update the `README.md` with the new version.
 5. `git commit -am "Prepare for release X.Y.Z."` (where X.Y.Z is the new version)

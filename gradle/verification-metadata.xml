@@ -251,6 +251,11 @@
             <pgp value="9E3044071B758EBCB7E45673700E4F39BC05364B"/>
          </artifact>
       </component>
+      <component group="org.eclipse.platform" name="org.eclipse.osgi" version="3.23.0">
+         <artifact name="org.eclipse.osgi-3.23.0.jar">
+            <pgp value="9E3044071B758EBCB7E45673700E4F39BC05364B"/>
+         </artifact>
+      </component>
       <component group="org.gradle.kotlin" name="gradle-kotlin-dsl-plugins" version="5.2.0">
          <artifact name="gradle-kotlin-dsl-plugins-5.2.0.jar">
             <pgp value="1BD97A6A154E7810EE0BC832E2F38302C8075E3D"/>

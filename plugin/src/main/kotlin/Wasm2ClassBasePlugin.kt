@@ -5,7 +5,7 @@
 
 package at.released.wasm2class
 
-import at.released.wasm2class.Wasm2ClassConstants.Configurations.CHICORY_AOT_COMPILER
+import at.released.wasm2class.Wasm2ClassConstants.Configurations.CHICORY_COMPILER
 import at.released.wasm2class.Wasm2ClassConstants.Deps
 import at.released.wasm2class.Wasm2ClassConstants.WASM2CLASS_EXTENSION_NAME
 import org.gradle.api.Plugin
@@ -17,20 +17,20 @@ public class Wasm2ClassBasePlugin : Plugin<Project> {
     override fun apply(target: Project) {
         target.extensions.create(WASM2CLASS_EXTENSION_NAME, Wasm2ClassExtension::class.java)
 
-        val chicoryAotDependencies = target.configurations.create(CHICORY_AOT_COMPILER) {
+        val chicoryBuildTimeDependencies = target.configurations.create(CHICORY_COMPILER) {
             isCanBeResolved = false
             isCanBeConsumed = false
             isVisible = false
-            description = "The classpath for the Chicory AOT precompiler class generator"
+            description = "The classpath for the Chicory build time compiler"
             defaultDependencies {
-                add(target.dependencies.create(Deps.CHICORY_AOT_BUILD))
+                add(target.dependencies.create(Deps.CHICORY_BUILD_TIME_COMPILER))
             }
         }
 
-        target.configurations.create(Wasm2ClassConstants.Configurations.CHICORY_AOT_COMPILER_RUNTIME_CLASSPATH) {
+        target.configurations.create(Wasm2ClassConstants.Configurations.CHICORY_COMPILER_RUNTIME_CLASSPATH) {
             isCanBeResolved = true
             isCanBeConsumed = false
-            extendsFrom(chicoryAotDependencies)
+            extendsFrom(chicoryBuildTimeDependencies)
             attributes {
                 attribute(Usage.USAGE_ATTRIBUTE, target.objects.named(Usage.JAVA_RUNTIME))
             }

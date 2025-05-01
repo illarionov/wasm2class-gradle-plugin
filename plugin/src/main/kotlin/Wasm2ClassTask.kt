@@ -5,11 +5,14 @@
 
 package at.released.wasm2class
 
-import at.released.wasm2class.Wasm2ClassConstants.Configurations.CHICORY_AOT_COMPILER_RUNTIME_CLASSPATH
+import at.released.wasm2class.InterpreterFallback.FAIL
+import at.released.wasm2class.InterpreterFallback.SILENT
+import at.released.wasm2class.InterpreterFallback.WARN
+import at.released.wasm2class.Wasm2ClassConstants.Configurations.CHICORY_COMPILER_RUNTIME_CLASSPATH
 import at.released.wasm2class.Wasm2ClassTask.GenerateChicoryMachineClasses.Companion.createEmpty
-import at.released.wasm2class.Wasm2ClassTask.GenerateChicoryMachineClasses.WasmAotWorkParameters
-import com.dylibso.chicory.experimental.build.time.aot.Config
-import com.dylibso.chicory.experimental.build.time.aot.Generator
+import at.released.wasm2class.Wasm2ClassTask.GenerateChicoryMachineClasses.WasmBuildTimeWorkParameters
+import com.dylibso.chicory.build.time.compiler.Config
+import com.dylibso.chicory.build.time.compiler.Generator
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import org.gradle.api.file.ConfigurableFileCollection
@@ -17,6 +20,7 @@ import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
+import org.gradle.api.provider.SetProperty
 import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.Classpath
 import org.gradle.api.tasks.InputFiles
@@ -36,6 +40,7 @@ import java.nio.file.SimpleFileVisitor
 import java.nio.file.attribute.BasicFileAttributes
 import javax.inject.Inject
 import kotlin.io.path.createDirectories
+import com.dylibso.chicory.compiler.InterpreterFallback as ChicoryInterpreterFallback
 
 @CacheableTask
 public abstract class Wasm2ClassTask @Inject constructor(
@@ -66,7 +71,7 @@ public abstract class Wasm2ClassTask @Inject constructor(
     public abstract val outputResources: DirectoryProperty
 
     /**
-     * The classpath with Chicory AOT.
+     * The classpath with Chicory Build-time compiler.
      */
     @get:InputFiles
     @get:Classpath
@@ -87,19 +92,20 @@ public abstract class Wasm2ClassTask @Inject constructor(
             classpath.from(chicoryClasspath)
         }
         modules.forEach { binarySpec: Wasm2ClassMachineModuleSpec ->
-            workQueue.submit(GenerateChicoryMachineClasses::class.java) { setFrom(binarySpec) }
+            workQueue.submit(GenerateChicoryMachineClasses::class.java) {
+                wasm.set(binarySpec.wasm)
+                outputClasses.set(this@Wasm2ClassTask.outputClasses)
+                outputSources.set(this@Wasm2ClassTask.outputSources)
+                outputResources.set(this@Wasm2ClassTask.outputResources)
+                outputClassPrefix.set(binarySpec.outputClassPrefix)
+                interpreterFallback.set(binarySpec.interpreterFallback)
+                interpretedFunctions.set(binarySpec.interpretedFunctions)
+            }
         }
     }
 
-    private fun WasmAotWorkParameters.setFrom(spec: Wasm2ClassMachineModuleSpec) {
-        wasm.set(spec.wasm)
-        outputClasses.set(this@Wasm2ClassTask.outputClasses)
-        outputSources.set(this@Wasm2ClassTask.outputSources)
-        outputResources.set(this@Wasm2ClassTask.outputResources)
-        outputClassPrefix.set(spec.outputClassPrefix)
-    }
-
-    internal abstract class GenerateChicoryMachineClasses @Inject constructor() : WorkAction<WasmAotWorkParameters> {
+    internal abstract class GenerateChicoryMachineClasses @Inject constructor() :
+        WorkAction<WasmBuildTimeWorkParameters> {
         override fun execute() {
             val config = Config.builder().apply {
                 withWasmFile(parameters.wasm.asFile.get().toPath())
@@ -107,20 +113,24 @@ public abstract class Wasm2ClassTask @Inject constructor(
                 withTargetClassFolder(parameters.outputClasses.asFile.get().toPath())
                 withTargetSourceFolder(parameters.outputSources.asFile.get().toPath())
                 withTargetWasmFolder(parameters.outputResources.asFile.get().toPath())
+                withInterpreterFallback(parameters.interpreterFallback.get().chicory)
+                withInterpretedFunctions(parameters.interpretedFunctions.getOrElse(emptySet()))
             }.build()
             Generator(config).run {
                 generateSources()
-                generateResources()
-                generateMetaWasm()
+                val finalInterpretedFunctions = generateResources()
+                generateMetaWasm(finalInterpretedFunctions)
             }
         }
 
-        internal interface WasmAotWorkParameters : WorkParameters {
+        internal interface WasmBuildTimeWorkParameters : WorkParameters {
             val wasm: RegularFileProperty
             val outputClasses: DirectoryProperty
             val outputSources: DirectoryProperty
             val outputResources: DirectoryProperty
             val outputClassPrefix: Property<String>
+            val interpreterFallback: Property<InterpreterFallback>
+            val interpretedFunctions: SetProperty<Int>
         }
 
         internal companion object {
@@ -138,7 +148,7 @@ public abstract class Wasm2ClassTask @Inject constructor(
                 name: String,
                 crossinline block: Wasm2ClassTask.() -> Unit = {},
             ): TaskProvider<Wasm2ClassTask> = tasks.register(name, Wasm2ClassTask::class.java) {
-                this.chicoryClasspath.from(configurations.named(CHICORY_AOT_COMPILER_RUNTIME_CLASSPATH))
+                this.chicoryClasspath.from(configurations.named(CHICORY_COMPILER_RUNTIME_CLASSPATH))
                 block()
             }
 
@@ -164,6 +174,13 @@ public abstract class Wasm2ClassTask @Inject constructor(
                 )
                 return fullPath
             }
+
+            private val InterpreterFallback.chicory: ChicoryInterpreterFallback
+                get() = when (this) {
+                    SILENT -> ChicoryInterpreterFallback.SILENT
+                    WARN -> ChicoryInterpreterFallback.WARN
+                    FAIL -> ChicoryInterpreterFallback.FAIL
+                }
         }
     }
 }

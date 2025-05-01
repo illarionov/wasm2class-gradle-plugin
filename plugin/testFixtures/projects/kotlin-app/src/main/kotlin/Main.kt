@@ -27,8 +27,8 @@ private fun runHelloWorld(wasi: WasiPreview1) {
     @Suppress("SpreadOperator")
     val store = Store().addFunction(*wasi.toHostFunctions())
     val instance = store.instantiate("helloworld") { importValues ->
-        Instance.builder(HelloworldModule.load())
-            .withMachineFactory(HelloworldModule::create)
+        Instance.builder(Helloworld.load())
+            .withMachineFactory(Helloworld::create)
             .withImportValues(importValues)
             .withStart(false)
             .build()
@@ -40,8 +40,8 @@ private fun runClock(wasi: WasiPreview1) {
     @Suppress("SpreadOperator")
     val store = Store().addFunction(*wasi.toHostFunctions())
     val clockInstance = store.instantiate("clock") { importValues ->
-        Instance.builder(ClockModule.load())
-            .withMachineFactory(ClockModule::create)
+        Instance.builder(Clock.load())
+            .withMachineFactory(Clock::create)
             .withImportValues(importValues)
             .withStart(false)
             .build()

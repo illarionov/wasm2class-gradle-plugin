@@ -7,6 +7,7 @@
 -dontwarn com.dylibso.chicory.experimental.hostmodule.annotations.HostModule
 -dontwarn com.dylibso.chicory.experimental.hostmodule.annotations.WasmExport
 -dontwarn com.google.errorprone.annotations.FormatMethod
+-dontwarn java.lang.Runtime$Version
 -dontwarn java.lang.System$Logger$Level
 -dontwarn java.lang.System$Logger
 

@@ -27,7 +27,7 @@ internal object AgpVersionCompatibility {
     val AGP_8_0_2 = Version(8, 0, 2)
     val AGP_8_1_1 = Version(8, 1, 1)
     val AGP_8_2_0 = Version(8, 2, 0)
-    val AGP_8_2_2 = Version(8, 2, 0)
+    val AGP_8_2_2 = Version(8, 2, 2)
     val AGP_8_3_0 = Version(8, 3, 0)
     val AGP_8_4_0 = Version(8, 4, 0)
     val AGP_8_5_0 = Version(8, 5, 0)
@@ -38,6 +38,11 @@ internal object AgpVersionCompatibility {
     val AGP_8_8_2 = Version(8, 8, 2)
     val AGP_8_9_0 = Version(8, 9, 0)
     val AGP_8_9_1 = Version(8, 9, 1)
+    val AGP_8_9_3 = Version(8, 9, 3)
+    val AGP_8_10_0 = Version(8, 10, 0)
+    val AGP_8_10_1 = Version(8, 10, 1)
+    val AGP_8_11_0_RC01 = Version(8, 11, 0, "rc01")
+    val AGP_8_12_0_ALPHA04 = Version(8, 12, 0, "alpha04")
 
     // Checks if a AGP version [agpVersion] can run on the current JVM
     fun isAgpCompatibleWithRuntime(agpVersion: Version): Boolean {
@@ -73,6 +78,7 @@ internal object AgpVersionCompatibility {
     fun getCompatibleAndroidApiLevel(
         agpVersion: Version,
     ): Int = when {
+        agpVersion >= AGP_8_9_1 -> 36
         agpVersion >= AGP_8_6_0 -> 35
         agpVersion >= AGP_8_1_1 -> 34
         agpVersion >= AGP_7_2_0 -> 33

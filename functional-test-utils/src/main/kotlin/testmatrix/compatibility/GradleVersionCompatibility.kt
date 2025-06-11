@@ -11,7 +11,7 @@ import at.released.wasm2class.test.functional.testmatrix.Version
 
 internal object GradleVersionCompatibility {
     val GRADLE_6_8_3 = Version(6, 8, 3)
-    val GRADLE_7_6_3 = Version(7, 6, 3)
+    val GRADLE_7_6_5 = Version(7, 6, 5)
     val GRADLE_7_4 = Version(7, 4)
     val GRADLE_8_0 = Version(8, 0)
     val GRADLE_8_1_1 = Version(8, 1, 1)
@@ -24,7 +24,9 @@ internal object GradleVersionCompatibility {
     val GRADLE_8_9 = Version(8, 9)
     val GRADLE_8_10_2 = Version(8, 10, 2)
     val GRADLE_8_11_1 = Version(8, 11, 1)
+    val GRADLE_8_12_1 = Version(8, 12, 1)
     val GRADLE_8_13 = Version(8, 13)
+    val GRADLE_8_14_2 = Version(8, 14, 2)
 
     // Checks if a Gradle version can run on the current JVM
     fun isGradleCompatibleWithRuntime(gradleVersion: Version): Boolean {
@@ -52,7 +54,8 @@ internal object GradleVersionCompatibility {
             21 -> Version(8, 5)
             22 -> Version(8, 8)
             23 -> Version(8, 10)
-            else -> Version(8, 10)
+            24 -> Version(8, 14)
+            else -> Version(8, 14)
         }
     } else {
         Version(1, 0)

@@ -6,18 +6,23 @@
 package at.released.wasm2class.test.functional.testmatrix
 
 import at.released.wasm2class.test.functional.testmatrix.compatibility.AgpVersionCompatibility.AGP_8_0_2
+import at.released.wasm2class.test.functional.testmatrix.compatibility.AgpVersionCompatibility.AGP_8_10_1
+import at.released.wasm2class.test.functional.testmatrix.compatibility.AgpVersionCompatibility.AGP_8_11_0_RC01
+import at.released.wasm2class.test.functional.testmatrix.compatibility.AgpVersionCompatibility.AGP_8_12_0_ALPHA04
 import at.released.wasm2class.test.functional.testmatrix.compatibility.AgpVersionCompatibility.AGP_8_5_2
 import at.released.wasm2class.test.functional.testmatrix.compatibility.AgpVersionCompatibility.AGP_8_8_2
-import at.released.wasm2class.test.functional.testmatrix.compatibility.AgpVersionCompatibility.AGP_8_9_1
+import at.released.wasm2class.test.functional.testmatrix.compatibility.AgpVersionCompatibility.AGP_8_9_3
 import at.released.wasm2class.test.functional.testmatrix.compatibility.AgpVersionCompatibility.agpIsCompatibleWithGradle
 import at.released.wasm2class.test.functional.testmatrix.compatibility.AgpVersionCompatibility.getCompatibleAndroidApiLevel
 import at.released.wasm2class.test.functional.testmatrix.compatibility.AgpVersionCompatibility.isAgpCompatibleWithRuntime
+import at.released.wasm2class.test.functional.testmatrix.compatibility.GradleVersionCompatibility.GRADLE_8_12_1
 import at.released.wasm2class.test.functional.testmatrix.compatibility.GradleVersionCompatibility.GRADLE_8_13
+import at.released.wasm2class.test.functional.testmatrix.compatibility.GradleVersionCompatibility.GRADLE_8_14_2
 import at.released.wasm2class.test.functional.testmatrix.compatibility.GradleVersionCompatibility.GRADLE_8_8
 import at.released.wasm2class.test.functional.testmatrix.compatibility.GradleVersionCompatibility.isGradleCompatibleWithRuntime
 import at.released.wasm2class.test.functional.testmatrix.compatibility.KotlinVersionCompatibility.KOTLIN_2_0_21
 import at.released.wasm2class.test.functional.testmatrix.compatibility.KotlinVersionCompatibility.KOTLIN_2_1_10
-import at.released.wasm2class.test.functional.testmatrix.compatibility.KotlinVersionCompatibility.KOTLIN_2_1_20
+import at.released.wasm2class.test.functional.testmatrix.compatibility.KotlinVersionCompatibility.KOTLIN_2_1_21
 import at.released.wasm2class.test.functional.testmatrix.compatibility.KotlinVersionCompatibility.isKotlinCompatible
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -27,7 +32,9 @@ public class TestMatrix {
     private val defaultVersionCatalog: VersionCatalog = VersionCatalog.getDefault()
     private val gradleVersions = listOf(
         GRADLE_8_8,
+        GRADLE_8_12_1,
         GRADLE_8_13,
+        GRADLE_8_14_2,
     )
 
     // See https://developer.android.com/studio/releases/gradle-plugin
@@ -35,13 +42,16 @@ public class TestMatrix {
         AGP_8_0_2,
         AGP_8_5_2,
         AGP_8_8_2,
-        AGP_8_9_1,
+        AGP_8_9_3,
+        AGP_8_10_1,
+        AGP_8_11_0_RC01,
+        AGP_8_12_0_ALPHA04,
     )
 
     private val kotlinVersions = listOf(
         KOTLIN_2_0_21,
         KOTLIN_2_1_10,
-        KOTLIN_2_1_20,
+        KOTLIN_2_1_21,
     )
 
     public fun getMainTestVariants(): List<VersionCatalog> = getCompatibleGradleAgpVariants()

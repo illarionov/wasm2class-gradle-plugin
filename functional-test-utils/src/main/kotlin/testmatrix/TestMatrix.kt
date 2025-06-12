@@ -100,7 +100,7 @@ public class TestMatrix {
         return sequence {
             gradleCompatibleVersions.forEach { gradleVersion ->
                 agpCompatibleVersions.forEach { agpVersion ->
-                    kotlinVersions.forEach { kotlinVersion ->
+                    kotlinVersions().forEach { kotlinVersion ->
                         yield(Triple(gradleVersion, agpVersion, kotlinVersion))
                     }
                 }
@@ -112,22 +112,20 @@ public class TestMatrix {
     }
 
     // Allow setting a single, fixed Gradle version via environment variables
-    private fun gradleVersions(): List<Version> {
-        val gradleVersion = System.getenv("TEST_GRADLE_VERSION")
-        return if (gradleVersion == null) {
-            gradleVersions
-        } else {
-            listOf(Version.parse(gradleVersion))
-        }
-    }
+    private fun gradleVersions(): List<Version> = systemEnvVersions("TEST_GRADLE_VERSION", gradleVersions)
 
     // Allow setting a single, fixed AGP version via environment variables
-    private fun agpVersions(): List<Version> {
-        val agpVersion = System.getenv("TEST_AGP_VERSION")
-        return if (agpVersion == null) {
-            agpVersions
+    private fun agpVersions(): List<Version> = systemEnvVersions("TEST_AGP_VERSION", agpVersions)
+
+    // Allow setting a single, fixed Kotlin version via environment variables
+    private fun kotlinVersions(): List<Version> = systemEnvVersions("TEST_KOTLIN_VERSION", kotlinVersions)
+
+    private fun systemEnvVersions(envName: String, orElse: List<Version>): List<Version> {
+        val version = System.getenv(envName)
+        return if (version == null) {
+            orElse
         } else {
-            listOf(Version.parse(agpVersion))
+            listOf(Version.parse(version))
         }
     }
 }

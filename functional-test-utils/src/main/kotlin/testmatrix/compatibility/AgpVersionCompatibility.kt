@@ -12,6 +12,7 @@ import at.released.wasm2class.test.functional.testmatrix.compatibility.GradleVer
 import at.released.wasm2class.test.functional.testmatrix.compatibility.GradleVersionCompatibility.GRADLE_8_0
 import at.released.wasm2class.test.functional.testmatrix.compatibility.GradleVersionCompatibility.GRADLE_8_10_2
 import at.released.wasm2class.test.functional.testmatrix.compatibility.GradleVersionCompatibility.GRADLE_8_11_1
+import at.released.wasm2class.test.functional.testmatrix.compatibility.GradleVersionCompatibility.GRADLE_8_13
 import at.released.wasm2class.test.functional.testmatrix.compatibility.GradleVersionCompatibility.GRADLE_8_2
 import at.released.wasm2class.test.functional.testmatrix.compatibility.GradleVersionCompatibility.GRADLE_8_4
 import at.released.wasm2class.test.functional.testmatrix.compatibility.GradleVersionCompatibility.GRADLE_8_6
@@ -61,6 +62,7 @@ internal object AgpVersionCompatibility {
         agpVersion: Version,
         gradleVersion: Version,
     ) = when {
+        agpVersion >= AGP_8_11_0_RC01 -> gradleVersion >= GRADLE_8_13
         agpVersion >= AGP_8_9_0 -> gradleVersion >= GRADLE_8_11_1
         agpVersion >= AGP_8_8_0 -> gradleVersion >= GRADLE_8_10_2
         agpVersion >= AGP_8_7_0 -> gradleVersion >= GRADLE_8_9

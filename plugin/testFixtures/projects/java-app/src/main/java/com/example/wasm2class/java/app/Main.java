@@ -18,13 +18,25 @@ public class Main {
         try (var wasi = WasiPreview1.builder().withOptions(wasiOptions).build()) {
             runHelloWorld(wasi);
             runClock(wasi);
+            runHelloWorldInterpreted(wasi);
         }
     }
 
     private static void runHelloWorld(WasiPreview1 wasi) {
         var store = new Store().addFunction(wasi.toHostFunctions());
-        var clockInstance = store.instantiate("helloworld", importValues -> Instance.builder(HelloworldModule.load())
-                .withMachineFactory(HelloworldModule::create)
+        var instance = store.instantiate("helloworld", importValues -> Instance.builder(Helloworld.load())
+                .withMachineFactory(Helloworld::create)
+                .withImportValues(importValues)
+                .withStart(false)
+                .build()
+        );
+        executeWasiStart(instance);
+    }
+
+    private static void runClock(WasiPreview1 wasi) {
+        var store = new Store().addFunction(wasi.toHostFunctions());
+        var clockInstance = store.instantiate("clock", importValues -> Instance.builder(Clock.load())
+                .withMachineFactory(Clock::create)
                 .withImportValues(importValues)
                 .withStart(false)
                 .build()
@@ -32,15 +44,16 @@ public class Main {
         executeWasiStart(clockInstance);
     }
 
-    private static void runClock(WasiPreview1 wasi) {
+    private static void runHelloWorldInterpreted(WasiPreview1 wasi) {
         var store = new Store().addFunction(wasi.toHostFunctions());
-        var clockInstance = store.instantiate("clock", importValues -> Instance.builder(ClockModule.load())
-                .withMachineFactory(ClockModule::create)
-                .withImportValues(importValues)
-                .withStart(false)
-                .build()
+        var instance = store.instantiate("helloworldInterpreted", importValues ->
+                Instance.builder(HelloworldInterpreted.load())
+                        .withMachineFactory(HelloworldInterpreted::create)
+                        .withImportValues(importValues)
+                        .withStart(false)
+                        .build()
         );
-        executeWasiStart(clockInstance);
+        executeWasiStart(instance);
     }
 
     private static void executeWasiStart(Instance instance) {

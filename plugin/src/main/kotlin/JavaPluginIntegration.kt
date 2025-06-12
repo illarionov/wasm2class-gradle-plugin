@@ -12,7 +12,7 @@ import org.gradle.api.plugins.JavaPluginExtension
 
 internal fun Project.setupJavaPluginIntegration() {
     val wasm2ClassExtension: Wasm2ClassExtension = extensions.getByType(Wasm2ClassExtension::class.java)
-    wasm2ClassExtension.outputDirectory.convention(layout.buildDirectory.dir("generated-chicory-aot/java"))
+    wasm2ClassExtension.outputDirectory.convention(layout.buildDirectory.dir("generated-chicory/java"))
 
     val wasm2classTask = registerWasm2ClassTask()
 

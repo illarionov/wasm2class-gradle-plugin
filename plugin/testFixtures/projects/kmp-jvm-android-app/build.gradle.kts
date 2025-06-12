@@ -22,6 +22,7 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
+            implementation(libs.chicory.annotations)
             implementation(libs.chicory.wasi)
         }
     }

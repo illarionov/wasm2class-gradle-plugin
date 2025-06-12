@@ -40,7 +40,7 @@ internal fun Project.setupAndroidPluginIntegration() {
 
     // Configure global Wasm2ClassExtension with android-specific defaults
     val wasm2ClassExtension = extensions.getByType(Wasm2ClassExtension::class.java).apply {
-        outputDirectory.convention(layout.buildDirectory.dir("generated-chicory-aot/android"))
+        outputDirectory.convention(layout.buildDirectory.dir("generated-chicory/android"))
         targetPackage.convention(extensions.getByType(CommonExtension::class.java).namespace)
     }
 
@@ -71,25 +71,25 @@ internal fun Project.setupAndroidPluginIntegration() {
 
         // To add generated .class files to the compile classpath, we first need to package them into a JAR archive.
         // There might be a simpler way to do this.
-        val packAotMachineClassesJar: TaskProvider<Jar> = tasks.register(
-            "${variant.name}PackAotMachineJar",
+        val packMachineClassesJar: TaskProvider<Jar> = tasks.register(
+            "${variant.name}PackWasmMachineJar",
             Jar::class.java,
         ) {
             from(wasm2ClassTask.flatMap(Wasm2ClassTask::outputClasses))
             destinationDirectory.set(
-                wasm2ClassExtension.outputDirectory.map { it.dir("${variant.name}AotMachineClassesJar") },
+                wasm2ClassExtension.outputDirectory.map { it.dir("${variant.name}WasmMachineClassesJar") },
             )
-            archiveFileName.set("${variant.name}-aot-machine-classes.jar")
+            archiveFileName.set("${variant.name}-wasm-machine-classes.jar")
         }
 
-        val aotMachineJar = "${variant.name}AotMachineJar"
-        val aotMachineJarConfiguration = configurations.create(aotMachineJar) {
+        val wasmMachineJar = "${variant.name}WasmMachineJar"
+        val wasmMachineJarConfiguration = configurations.create(wasmMachineJar) {
             isCanBeConsumed = false
             isCanBeResolved = false
             isVisible = false
         }
-        dependencies.add(aotMachineJar, files(packAotMachineClassesJar.flatMap(Jar::getArchiveFile)))
-        variant.compileConfiguration.extendsFrom(aotMachineJarConfiguration)
+        dependencies.add(wasmMachineJar, files(packMachineClassesJar.flatMap(Jar::getArchiveFile)))
+        variant.compileConfiguration.extendsFrom(wasmMachineJarConfiguration)
     }
 
     project.dependencies.add("implementation", Deps.CHICORY_RUNTIME)

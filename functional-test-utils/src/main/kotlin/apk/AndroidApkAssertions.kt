@@ -36,7 +36,7 @@ public fun Assert<ApkInspector>.hasGeneratedAotFiles(
     moduleBaseName: String,
 ): Unit = all {
     val packageFqn = targetPackage.replace(".", "/")
-    hasGeneratedModuleClassBytecode("$packageFqn/${moduleBaseName}Module")
+    hasGeneratedModuleClassBytecode("$packageFqn/$moduleBaseName")
     hasGeneratedMachineClassBytecode("$packageFqn/${moduleBaseName}Machine")
     hasGeneratedResource(targetPackage, "$moduleBaseName.meta")
 }

@@ -12,6 +12,6 @@
     public protected *;
 }
 
--keepclasseswithmembers,allowoptimization public final class **Module {
+-keepclasseswithmembers,allowoptimization public final class * {
     public static com.dylibso.chicory.wasm.WasmModule load();
 }

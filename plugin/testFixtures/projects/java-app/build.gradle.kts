@@ -17,10 +17,15 @@ wasm2class {
         create("clock") {
             wasm = file("../testwasm/clock.wasm")
         }
+        create("helloworldInterpreted") {
+            wasm = file("../testwasm/helloworld.wasm")
+            interpretedFunctions = setOf(4, 5, 6, 7, 8)
+        }
     }
 }
 
 dependencies {
+    implementation(libs.chicory.annotations)
     implementation(libs.chicory.wasi)
 }
 

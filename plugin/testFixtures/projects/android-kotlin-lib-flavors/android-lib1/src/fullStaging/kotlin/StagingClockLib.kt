@@ -8,7 +8,7 @@ package com.example.wasm2class.android.kotlin.lib.lib1
 import com.dylibso.chicory.runtime.ImportValues
 import com.dylibso.chicory.runtime.Instance
 import com.dylibso.chicory.runtime.Store
-import com.example.wasm2class.android.kotlin.lib.lib1.clock.ClockModule
+import com.example.wasm2class.android.kotlin.lib.lib1.clock.Clock
 
 public object StagingClockLib {
     fun runClock() {
@@ -16,8 +16,8 @@ public object StagingClockLib {
             @Suppress("SpreadOperator")
             val store = Store().addFunction(*wasi.toHostFunctions())
             val clockInstance = store.instantiate("clock") { importValues: ImportValues? ->
-                Instance.builder(ClockModule.load())
-                    .withMachineFactory(ClockModule::create)
+                Instance.builder(Clock.load())
+                    .withMachineFactory(Clock::create)
                     .withImportValues(importValues)
                     .withStart(false)
                     .build()

@@ -1,3 +1,11 @@
+public final class at/released/wasm2class/InterpreterFallback : java/lang/Enum {
+	public static final field FAIL Lat/released/wasm2class/InterpreterFallback;
+	public static final field SILENT Lat/released/wasm2class/InterpreterFallback;
+	public static final field WARN Lat/released/wasm2class/InterpreterFallback;
+	public static fun valueOf (Ljava/lang/String;)Lat/released/wasm2class/InterpreterFallback;
+	public static fun values ()[Lat/released/wasm2class/InterpreterFallback;
+}
+
 public final class at/released/wasm2class/Wasm2ClassBasePlugin : org/gradle/api/Plugin {
 	public fun <init> ()V
 	public synthetic fun apply (Ljava/lang/Object;)V
@@ -19,6 +27,8 @@ public abstract interface annotation class at/released/wasm2class/Wasm2ClassGene
 
 public class at/released/wasm2class/Wasm2ClassMachineModuleSpec : org/gradle/api/Named {
 	public fun <init> (Ljava/lang/String;Lorg/gradle/api/model/ObjectFactory;)V
+	public final fun getInterpretedFunctions ()Lorg/gradle/api/provider/SetProperty;
+	public final fun getInterpreterFallback ()Lorg/gradle/api/provider/Property;
 	public fun getName ()Ljava/lang/String;
 	public final fun getOutputClassPrefix ()Lorg/gradle/api/provider/Property;
 	public final fun getTargetPackage ()Lorg/gradle/api/provider/Property;

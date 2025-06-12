@@ -5,7 +5,7 @@
 
 package at.released.wasm2class
 
-import at.released.wasm2class.Wasm2ClassConstants.Configurations.CHICORY_AOT_COMPILER_RUNTIME_CLASSPATH
+import at.released.wasm2class.Wasm2ClassConstants.Configurations.CHICORY_COMPILER_RUNTIME_CLASSPATH
 import at.released.wasm2class.Wasm2ClassConstants.Deps
 import at.released.wasm2class.Wasm2ClassConstants.Deps.CHICORY_GROUP
 import at.released.wasm2class.Wasm2ClassTask.GenerateChicoryMachineClasses.Companion.registerWasm2ClassTask
@@ -22,11 +22,11 @@ import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
 
 internal fun Project.setupKotlinMultiplatformPluginIntegration() {
     val wasm2ClassExtension: Wasm2ClassExtension = extensions.getByType(Wasm2ClassExtension::class.java)
-    wasm2ClassExtension.outputDirectory.convention(layout.buildDirectory.dir("generated-chicory-aot/multiplatform"))
+    wasm2ClassExtension.outputDirectory.convention(layout.buildDirectory.dir("generated-chicory/multiplatform"))
 
     val wasm2classTask = registerWasm2ClassTask()
 
-    val aotCompileClasspath: FileCollection = configurations.named(CHICORY_AOT_COMPILER_RUNTIME_CLASSPATH).get()
+    val compileWasmModuleClasspath: FileCollection = configurations.named(CHICORY_COMPILER_RUNTIME_CLASSPATH).get()
         .incoming
         .artifactView {
             componentFilter {
@@ -40,24 +40,24 @@ internal fun Project.setupKotlinMultiplatformPluginIntegration() {
     extensions.configure<KotlinMultiplatformExtension>("kotlin") {
         targets.withType(KotlinJvmTarget::class.java) {
             compilations.named(MAIN_COMPILATION_NAME).configure {
-                val compileAotModuleTask = registerCompileModuleTask(
+                val compileWasmModuleTask = registerCompileModuleTask(
                     this@withType,
                     wasm2classTask,
                     outputClassesDir = wasm2ClassExtension.outputDirectory.map { it.dir("module-classes") },
-                    aotCompileClasspath = aotCompileClasspath,
+                    compileWasmModuleClasspath = compileWasmModuleClasspath,
                 )
 
-                val aotModuleClasses = compileAotModuleTask.flatMap(JavaCompile::getDestinationDirectory)
+                val wasmModuleClasses = compileWasmModuleTask.flatMap(JavaCompile::getDestinationDirectory)
                 val outputClasses = wasm2classTask.flatMap(Wasm2ClassTask::outputClasses)
                 defaultSourceSet {
                     resources.srcDirs(
                         wasm2classTask.flatMap(Wasm2ClassTask::outputResources),
                         outputClasses,
-                        aotModuleClasses,
+                        wasmModuleClasses,
                     )
                     dependencies {
                         implementation(Deps.CHICORY_RUNTIME)
-                        compileOnly(files(aotModuleClasses, outputClasses))
+                        compileOnly(files(wasmModuleClasses, outputClasses))
                     }
                 }
             }
@@ -69,12 +69,12 @@ private fun Project.registerCompileModuleTask(
     target: KotlinJvmTarget,
     wasm2ClassTask: TaskProvider<Wasm2ClassTask>,
     outputClassesDir: Provider<Directory>,
-    aotCompileClasspath: FileCollection,
+    compileWasmModuleClasspath: FileCollection,
 ): Provider<JavaCompile> {
-    return tasks.register("${target.name}CompileAotModuleWithJavac", JavaCompile::class.java) {
+    return tasks.register("${target.name}CompileWasmModuleWithJavac", JavaCompile::class.java) {
         source(wasm2ClassTask.flatMap(Wasm2ClassTask::outputSources))
         classpath = files(
-            aotCompileClasspath,
+            compileWasmModuleClasspath,
             wasm2ClassTask.flatMap(Wasm2ClassTask::outputClasses),
         )
         destinationDirectory.set(outputClassesDir)

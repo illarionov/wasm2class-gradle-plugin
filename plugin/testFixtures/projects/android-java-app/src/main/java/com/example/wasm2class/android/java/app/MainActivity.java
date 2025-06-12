@@ -41,8 +41,8 @@ public class MainActivity extends Activity {
 
     private static void runHelloWorld(WasiPreview1 wasi) {
         var store = new Store().addFunction(wasi.toHostFunctions());
-        var clockInstance = store.instantiate("helloworld", importValues -> Instance.builder(HelloworldModule.load())
-                .withMachineFactory(HelloworldModule::create)
+        var clockInstance = store.instantiate("helloworld", importValues -> Instance.builder(Helloworld.load())
+                .withMachineFactory(Helloworld::create)
                 .withImportValues(importValues)
                 .withStart(false)
                 .build()
@@ -52,8 +52,8 @@ public class MainActivity extends Activity {
 
     private static void runClock(WasiPreview1 wasi) {
         var store = new Store().addFunction(wasi.toHostFunctions());
-        var clockInstance = store.instantiate("clock", importValues -> Instance.builder(ClockModule.load())
-                .withMachineFactory(ClockModule::create)
+        var clockInstance = store.instantiate("clock", importValues -> Instance.builder(Clock.load())
+                .withMachineFactory(Clock::create)
                 .withImportValues(importValues)
                 .withStart(false)
                 .build()

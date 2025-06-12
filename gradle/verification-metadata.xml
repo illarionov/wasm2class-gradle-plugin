@@ -26,6 +26,7 @@
          <trusted-key id="0785B3EFF60B1B1BEA94E0BB7C25280EAE63EBE5" group="org.apache.httpcomponents"/>
          <trusted-key id="09939C73246B4BA7444CAA453D002DBC5EA9615F" group="dev.drewhamilton.poko" name="poko-annotations-jvm"/>
          <trusted-key id="0F06FF86BEEAF4E71866EE5232EE5355A6BC6E42" group="^com[.]android[.]tools($|([.].*))" regex="true"/>
+         <trusted-key id="0FCBBD821362A9C39239162E7D71833C1A8AF208" group="com.dylibso.chicory"/>
          <trusted-key id="19BEAB2D799C020F17C69126B16698A4ADF4D638" group="org.checkerframework" name="checker-qual"/>
          <trusted-key id="1BD97A6A154E7810EE0BC832E2F38302C8075E3D">
             <trusting group="com.gradle.publish" name="plugin-publish-plugin"/>

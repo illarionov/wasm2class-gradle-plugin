@@ -76,5 +76,6 @@ wasm2class {
 }
 
 dependencies {
+    implementation(libs.chicory.annotations)
     implementation(libs.chicory.wasi)
 }

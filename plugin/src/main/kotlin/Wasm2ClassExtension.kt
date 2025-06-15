@@ -38,7 +38,7 @@ public abstract class Wasm2ClassExtension @Inject constructor(
      * The root directory for the generated classes.
      */
     public val outputDirectory: DirectoryProperty = objects.directoryProperty().convention(
-        layout.buildDirectory.dir("generated-chicory-aot"),
+        layout.buildDirectory.dir("generated-chicory"),
     )
 
     /**

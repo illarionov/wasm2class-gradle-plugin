@@ -14,8 +14,8 @@ public object HelloworldLib {
             @Suppress("SpreadOperator")
             val store = Store().addFunction(*wasi.toHostFunctions())
             val clockInstance = store.instantiate("helloworld") { importValues ->
-                Instance.builder(HelloworldModule.load())
-                    .withMachineFactory(HelloworldModule::create)
+                Instance.builder(Helloworld.load())
+                    .withMachineFactory(Helloworld::create)
                     .withImportValues(importValues)
                     .withStart(false)
                     .build()

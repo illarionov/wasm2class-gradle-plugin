@@ -21,6 +21,7 @@ public fun VersionCatalog.toLibsVersionsToml(): FileContent {
 
         [libraries]
         chicory-wasi = { module = "com.dylibso.chicory:wasi", version.ref = "chicory" }
+        chicory-annotations = { module = "com.dylibso.chicory:annotations", version.ref = "chicory" }
 
         [plugins]
         android-application = { id = "com.android.application", version.ref = "agp" }

@@ -9,12 +9,14 @@ import org.gradle.api.Named
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.Property
+import org.gradle.api.provider.SetProperty
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity.NONE
 import org.gradle.kotlin.dsl.property
+import org.gradle.kotlin.dsl.setProperty
 import javax.inject.Inject
 
 @Wasm2ClassGeneratorDsl
@@ -40,9 +42,7 @@ public open class Wasm2ClassMachineModuleSpec @Inject constructor(
     public val targetPackage: Property<String> = objects.property<String>()
 
     /**
-     * The base name for generated classes in the format of `<target package>.<base name>`.
-     * For example: *"com.example.Add"*. A class named *"com.example.AddModule"*
-     * will be generated based on this name.
+     * Fully qualified name for the generated class
      *
      * Default: "[targetPackage].[name.capitalized()][name]"
      */
@@ -50,6 +50,20 @@ public open class Wasm2ClassMachineModuleSpec @Inject constructor(
     public val outputClassPrefix: Property<String> = objects.property<String>().convention(
         targetPackage.map { "$it.${getName().capitalizeAscii()}" },
     )
+
+    /**
+     * The interpreter fallback to be used
+     */
+    @get:Input
+    public val interpreterFallback: Property<InterpreterFallback> = objects.property<InterpreterFallback>().convention(
+        InterpreterFallback.FAIL,
+    )
+
+    /**
+     * The set of interpreted functions
+     */
+    @get:Input
+    public val interpretedFunctions: SetProperty<Int> = objects.setProperty<Int>().convention(emptySet())
 
     @Input
     override fun getName(): String = name

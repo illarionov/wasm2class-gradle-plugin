@@ -7,7 +7,7 @@
 agp = "8.10.1"
 kotlin = "2.1.21"
 
-android-tools = "31.10.1"
+android-tools = "31.11.0"
 android-tools-dexlib2 = "3.0.9"
 assertk = "0.28.1"
 chicory = "1.4.1"

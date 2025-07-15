@@ -6,7 +6,6 @@
 @file:Suppress("UnstableApiUsage")
 
 import com.vanniktech.maven.publish.GradlePublishPlugin
-import com.vanniktech.maven.publish.SonatypeHost
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.dsl.ExplicitApiMode.Warning
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -158,7 +157,7 @@ gradlePlugin {
 
 mavenPublishing {
     configure(GradlePublishPlugin())
-    publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
+    publishToMavenCentral()
     publishing {
         repositories {
             maven {

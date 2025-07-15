@@ -1,5 +1,17 @@
 # Change Log
 
+## [0.5.0] — 2025-07-15
+
+#### 🤖 Dependencies
+
+- Updated Chicory to 1.5.1
+
+#### 🔧 Maintenance
+
+- Updated gradle-maven-publish-plugin to 0.31.0
+- Test with AGP 8.11.1, 8.12.0-alpha09; Kotlin 2.1.21, 2.2.0; Gradle 8.14.2, 9.0.0-rc-2
+- Updated internal dependency versions
+
 ## [0.4.0] — 2025-06-19
 
 Bump Chicory version to 1.4.1

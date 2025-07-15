@@ -35,6 +35,7 @@ internal object AgpVersionCompatibility {
     val AGP_8_5_2 = Version(8, 5, 2)
     val AGP_8_6_0 = Version(8, 6, 0)
     val AGP_8_7_0 = Version(8, 7, 0)
+    val AGP_8_7_3 = Version(8, 7, 3)
     val AGP_8_8_0 = Version(8, 8, 0)
     val AGP_8_8_2 = Version(8, 8, 2)
     val AGP_8_9_0 = Version(8, 9, 0)
@@ -42,8 +43,8 @@ internal object AgpVersionCompatibility {
     val AGP_8_9_3 = Version(8, 9, 3)
     val AGP_8_10_0 = Version(8, 10, 0)
     val AGP_8_10_1 = Version(8, 10, 1)
-    val AGP_8_11_0_RC01 = Version(8, 11, 0, "rc01")
-    val AGP_8_12_0_ALPHA04 = Version(8, 12, 0, "alpha04")
+    val AGP_8_11_1 = Version(8, 11, 1)
+    val AGP_8_12_0_ALPHA09 = Version(8, 12, 0, "alpha09")
 
     // Checks if a AGP version [agpVersion] can run on the current JVM
     fun isAgpCompatibleWithRuntime(agpVersion: Version): Boolean {
@@ -62,7 +63,7 @@ internal object AgpVersionCompatibility {
         agpVersion: Version,
         gradleVersion: Version,
     ) = when {
-        agpVersion >= AGP_8_11_0_RC01 -> gradleVersion >= GRADLE_8_13
+        agpVersion >= AGP_8_11_1 -> gradleVersion >= GRADLE_8_13
         agpVersion >= AGP_8_9_0 -> gradleVersion >= GRADLE_8_11_1
         agpVersion >= AGP_8_8_0 -> gradleVersion >= GRADLE_8_10_2
         agpVersion >= AGP_8_7_0 -> gradleVersion >= GRADLE_8_9

@@ -88,25 +88,45 @@ jobs:
       matrix:
         include:
           # AGP 8.12 alpha
+          - gradle: 9.0.0-rc-2
+            agp: 8.12.0-alpha09
+            kotlin: 2.2.0
+            jdk: 24
+
           - gradle: 8.14.2
-            agp: 8.12.0-alpha04
+            agp: 8.12.0-alpha09
+            kotlin: 2.2.0
+            jdk: 24
+
+          - gradle: 8.14.2
+            agp: 8.12.0-alpha09
             kotlin: 2.1.21
             jdk: 24
 
-          # AGP 8.11 RC
-          - gradle: 8.14.2
-            agp: 8.11.0-rc01
+          # AGP 8.11.1
+          - gradle: 9.0.0-rc-2
+            agp: 8.11.1
+            kotlin: 2.2.0
+            jdk: 23
+
+          - gradle: 8.14.3
+            agp: 8.11.1
+            kotlin: 2.2.0
+            jdk: 23
+
+          - gradle: 8.14.3
+            agp: 8.11.1
             kotlin: 2.1.21
             jdk: 23
 
           # AGP 8.10.1
-          - gradle: 8.14.2
+          - gradle: 8.14.3
             agp: 8.10.1
             kotlin: 2.1.21
             jdk: 23
 
           # AGP 8.9.3
-          - gradle: 8.14.2
+          - gradle: 8.14.3
             agp: 8.9.3
             kotlin: 2.1.21
             jdk: 23

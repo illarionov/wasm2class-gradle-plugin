@@ -5,7 +5,7 @@
 
 [versions]
 agp = "8.12.2"
-kotlin = "2.1.21"
+kotlin = "2.2.21"
 
 android-tools = "31.13.0"
 android-tools-dexlib2 = "3.0.9"

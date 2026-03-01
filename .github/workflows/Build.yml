@@ -71,7 +71,7 @@ jobs:
           | xargs -0 tar -c -I 'zstd -19 -T0' -f test-reports.tar.zst
 
       - name: Upload test reports
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: test-reports
@@ -229,7 +229,7 @@ jobs:
 
       - name: Upload lint outputs
         if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: lint-outputs
           path: lint-outputs.tar.zst
